@@ -1,0 +1,2901 @@
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	__aeabi_i2f
+  20              		.global	__aeabi_f2d
+  21              		.global	__aeabi_dmul
+  22              		.global	__aeabi_d2f
+  23              		.global	__aeabi_fmul
+  24              		.section	.text.main,"ax",%progbits
+  25              		.align	2
+  26              		.global	main
+  27              		.thumb
+  28              		.thumb_func
+  29              		.type	main, %function
+  30              	main:
+  31              	.LFB64:
+  32              		.file 1 "main.c"
+   1:main.c        **** /**
+   2:main.c        **** *
+   3:main.c        **** * In this project we set up a I2C master device with
+   4:main.c        **** * to understand the I2C protocol and communicate with a
+   5:main.c        **** * a I2C Slave device (LIS3DH Accelerometer).
+   6:main.c        **** *
+   7:main.c        **** * we have to use the accelerometer in High resolution mode  
+   8:main.c        **** * in order to acquire the data relating to the acceleration in 
+   9:main.c        **** * the three directions. Then we visualize values with
+  10:main.c        **** * Bridge Control Panel
+  11:main.c        **** *
+  12:main.c        **** * For the comunication we use a baud rate of 19200 because
+  13:main.c        **** * we have to sample with a frequency of 100Hz, so we have 
+  14:main.c        **** * 100 sample per second; we have to send to the 
+  15:main.c        **** * UART an array with size of 14. So 8*14*100=11200 that is higher
+  16:main.c        **** * than 9600, so we use 19200
+  17:main.c        **** */
+  18:main.c        **** 
+  19:main.c        **** // Include required header files
+  20:main.c        **** #include "I2C_Interface.h"
+  21:main.c        **** #include "project.h"
+  22:main.c        **** #include "stdio.h"
+  23:main.c        **** #include "math.h"
+  24:main.c        **** #include "Defines.h"
+  25:main.c        **** 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 2
+
+
+  26:main.c        **** 
+  27:main.c        **** int main(void)
+  28:main.c        **** {
+  33              		.loc 1 28 0
+  34              		.cfi_startproc
+  35              		@ args = 0, pretend = 0, frame = 96
+  36              		@ frame_needed = 0, uses_anonymous_args = 0
+  37 0000 30B5     		push	{r4, r5, lr}
+  38              		.cfi_def_cfa_offset 12
+  39              		.cfi_offset 4, -12
+  40              		.cfi_offset 5, -8
+  41              		.cfi_offset 14, -4
+  42 0002 99B0     		sub	sp, sp, #100
+  43              		.cfi_def_cfa_offset 112
+  29:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  44              		.loc 1 29 0
+  45              		.syntax unified
+  46              	@ 29 "main.c" 1
+  47 0004 62B6     		CPSIE   i
+  48              	@ 0 "" 2
+  30:main.c        **** 
+  31:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  32:main.c        ****     I2C_Peripheral_Start();
+  49              		.loc 1 32 0
+  50              		.thumb
+  51              		.syntax unified
+  52 0006 FFF7FEFF 		bl	I2C_Peripheral_Start
+  53              	.LVL0:
+  33:main.c        ****     UART_Debug_Start();
+  54              		.loc 1 33 0
+  55 000a FFF7FEFF 		bl	UART_Debug_Start
+  56              	.LVL1:
+  34:main.c        ****     
+  35:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
+  57              		.loc 1 35 0
+  58 000e 0520     		movs	r0, #5
+  59 0010 FFF7FEFF 		bl	CyDelay
+  60              	.LVL2:
+  61              	.LBB2:
+  36:main.c        ****     
+  37:main.c        ****     // String to print out messages on the UART
+  38:main.c        ****     char message[50];
+  39:main.c        **** 
+  40:main.c        ****     // Check which devices are present on the I2C bus
+  41:main.c        ****     for (int i = 0 ; i < 128; i++)
+  62              		.loc 1 41 0
+  63 0014 0024     		movs	r4, #0
+  64 0016 0CE0     		b	.L2
+  65              	.LVL3:
+  66              	.L4:
+  42:main.c        ****     {
+  43:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
+  67              		.loc 1 43 0
+  68 0018 E0B2     		uxtb	r0, r4
+  69 001a FFF7FEFF 		bl	I2C_Peripheral_IsDeviceConnected
+  70              	.LVL4:
+  71 001e 38B1     		cbz	r0, .L3
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 3
+
+
+  44:main.c        ****         {
+  45:main.c        ****             // print out the address is hex format
+  46:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
+  72              		.loc 1 46 0
+  73 0020 2246     		mov	r2, r4
+  74 0022 A749     		ldr	r1, .L23+8
+  75 0024 0BA8     		add	r0, sp, #44
+  76 0026 FFF7FEFF 		bl	sprintf
+  77              	.LVL5:
+  47:main.c        ****             UART_Debug_PutString(message); 
+  78              		.loc 1 47 0
+  79 002a 0BA8     		add	r0, sp, #44
+  80 002c FFF7FEFF 		bl	UART_Debug_PutString
+  81              	.LVL6:
+  82              	.L3:
+  41:main.c        ****     {
+  83              		.loc 1 41 0 discriminator 2
+  84 0030 0134     		adds	r4, r4, #1
+  85              	.LVL7:
+  86              	.L2:
+  41:main.c        ****     {
+  87              		.loc 1 41 0 is_stmt 0 discriminator 1
+  88 0032 7F2C     		cmp	r4, #127
+  89 0034 F0DD     		ble	.L4
+  90              	.LBE2:
+  48:main.c        ****         }
+  49:main.c        ****         
+  50:main.c        ****     }
+  51:main.c        ****     
+  52:main.c        ****     /******************************************/
+  53:main.c        ****     /*            I2C Reading                 */
+  54:main.c        ****     /******************************************/
+  55:main.c        ****     
+  56:main.c        ****     /* Read WHO AM I REGISTER register */
+  57:main.c        ****     uint8_t who_am_i_reg;
+  58:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  91              		.loc 1 58 0 is_stmt 1
+  92 0036 0DF12B02 		add	r2, sp, #43
+  93 003a 0F21     		movs	r1, #15
+  94 003c 1820     		movs	r0, #24
+  95 003e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+  96              	.LVL8:
+  59:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
+  60:main.c        ****                                                   &who_am_i_reg);
+  61:main.c        ****     if (error == NO_ERROR)
+  97              		.loc 1 61 0
+  98 0042 48B9     		cbnz	r0, .L5
+  62:main.c        ****     {
+  63:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
+  99              		.loc 1 63 0
+ 100 0044 9DF82B20 		ldrb	r2, [sp, #43]	@ zero_extendqisi2
+ 101 0048 9E49     		ldr	r1, .L23+12
+ 102 004a 0BA8     		add	r0, sp, #44
+ 103              	.LVL9:
+ 104 004c FFF7FEFF 		bl	sprintf
+ 105              	.LVL10:
+  64:main.c        ****         UART_Debug_PutString(message); 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 4
+
+
+ 106              		.loc 1 64 0
+ 107 0050 0BA8     		add	r0, sp, #44
+ 108 0052 FFF7FEFF 		bl	UART_Debug_PutString
+ 109              	.LVL11:
+ 110 0056 02E0     		b	.L6
+ 111              	.LVL12:
+ 112              	.L5:
+  65:main.c        ****     }
+  66:main.c        ****     else
+  67:main.c        ****     {
+  68:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
+ 113              		.loc 1 68 0
+ 114 0058 9B48     		ldr	r0, .L23+16
+ 115              	.LVL13:
+ 116 005a FFF7FEFF 		bl	UART_Debug_PutString
+ 117              	.LVL14:
+ 118              	.L6:
+  69:main.c        ****     }
+  70:main.c        ****     
+  71:main.c        ****     /*      I2C Reading Status Register       */
+  72:main.c        ****     
+  73:main.c        ****     uint8_t status_register; 
+  74:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 119              		.loc 1 74 0
+ 120 005e 0DF12A02 		add	r2, sp, #42
+ 121 0062 2721     		movs	r1, #39
+ 122 0064 1820     		movs	r0, #24
+ 123 0066 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 124              	.LVL15:
+  75:main.c        ****                                         LIS3DH_STATUS_REG,
+  76:main.c        ****                                         &status_register);
+  77:main.c        ****     
+  78:main.c        ****     if (error == NO_ERROR)
+ 125              		.loc 1 78 0
+ 126 006a 48B9     		cbnz	r0, .L7
+  79:main.c        ****     {
+  80:main.c        ****         sprintf(message, "STATUS REGISTER: 0x%02X\r\n", status_register);
+ 127              		.loc 1 80 0
+ 128 006c 9DF82A20 		ldrb	r2, [sp, #42]	@ zero_extendqisi2
+ 129 0070 9649     		ldr	r1, .L23+20
+ 130 0072 0BA8     		add	r0, sp, #44
+ 131              	.LVL16:
+ 132 0074 FFF7FEFF 		bl	sprintf
+ 133              	.LVL17:
+  81:main.c        ****         UART_Debug_PutString(message); 
+ 134              		.loc 1 81 0
+ 135 0078 0BA8     		add	r0, sp, #44
+ 136 007a FFF7FEFF 		bl	UART_Debug_PutString
+ 137              	.LVL18:
+ 138 007e 02E0     		b	.L8
+ 139              	.LVL19:
+ 140              	.L7:
+  82:main.c        ****     }
+  83:main.c        ****     else
+  84:main.c        ****     {
+  85:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read status register\r\n");   
+ 141              		.loc 1 85 0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 5
+
+
+ 142 0080 9348     		ldr	r0, .L23+24
+ 143              	.LVL20:
+ 144 0082 FFF7FEFF 		bl	UART_Debug_PutString
+ 145              	.LVL21:
+ 146              	.L8:
+  86:main.c        ****     }
+  87:main.c        ****      
+  88:main.c        ****     /******************************************/
+  89:main.c        ****     /*        Read Control Register 1         */
+  90:main.c        ****     /******************************************/
+  91:main.c        ****     uint8_t ctrl_reg1; 
+  92:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 147              		.loc 1 92 0
+ 148 0086 0DF12902 		add	r2, sp, #41
+ 149 008a 2021     		movs	r1, #32
+ 150 008c 1820     		movs	r0, #24
+ 151 008e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 152              	.LVL22:
+  93:main.c        ****                                         LIS3DH_CTRL_REG1,
+  94:main.c        ****                                         &ctrl_reg1);
+  95:main.c        ****     
+  96:main.c        ****     if (error == NO_ERROR)
+ 153              		.loc 1 96 0
+ 154 0092 48B9     		cbnz	r0, .L9
+  97:main.c        ****     {
+  98:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
+ 155              		.loc 1 98 0
+ 156 0094 9DF82920 		ldrb	r2, [sp, #41]	@ zero_extendqisi2
+ 157 0098 8E49     		ldr	r1, .L23+28
+ 158 009a 0BA8     		add	r0, sp, #44
+ 159              	.LVL23:
+ 160 009c FFF7FEFF 		bl	sprintf
+ 161              	.LVL24:
+  99:main.c        ****         UART_Debug_PutString(message); 
+ 162              		.loc 1 99 0
+ 163 00a0 0BA8     		add	r0, sp, #44
+ 164 00a2 FFF7FEFF 		bl	UART_Debug_PutString
+ 165              	.LVL25:
+ 166 00a6 02E0     		b	.L10
+ 167              	.LVL26:
+ 168              	.L9:
+ 100:main.c        ****     }
+ 101:main.c        ****     else
+ 102:main.c        ****     {
+ 103:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
+ 169              		.loc 1 103 0
+ 170 00a8 8B48     		ldr	r0, .L23+32
+ 171              	.LVL27:
+ 172 00aa FFF7FEFF 		bl	UART_Debug_PutString
+ 173              	.LVL28:
+ 174              	.L10:
+ 104:main.c        ****     }
+ 105:main.c        ****     
+ 106:main.c        ****     /******************************************/
+ 107:main.c        ****     /*            I2C Writing                 */
+ 108:main.c        ****     /******************************************/
+ 109:main.c        ****     
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 6
+
+
+ 110:main.c        ****         
+ 111:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
+ 175              		.loc 1 111 0
+ 176 00ae 8B48     		ldr	r0, .L23+36
+ 177 00b0 FFF7FEFF 		bl	UART_Debug_PutString
+ 178              	.LVL29:
+ 112:main.c        ****     
+ 113:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1)//LP a 0
+ 179              		.loc 1 113 0
+ 180 00b4 9DF82930 		ldrb	r3, [sp, #41]	@ zero_extendqisi2
+ 181 00b8 572B     		cmp	r3, #87
+ 182 00ba 14D0     		beq	.L11
+ 114:main.c        ****     {
+ 115:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1;
+ 183              		.loc 1 115 0
+ 184 00bc 5722     		movs	r2, #87
+ 185 00be 8DF82920 		strb	r2, [sp, #41]
+ 116:main.c        ****     
+ 117:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 186              		.loc 1 117 0
+ 187 00c2 2021     		movs	r1, #32
+ 188 00c4 1820     		movs	r0, #24
+ 189 00c6 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
+ 190              	.LVL30:
+ 118:main.c        ****                                              LIS3DH_CTRL_REG1,
+ 119:main.c        ****                                              ctrl_reg1);
+ 120:main.c        ****     
+ 121:main.c        ****         if (error == NO_ERROR)
+ 191              		.loc 1 121 0
+ 192 00ca 48B9     		cbnz	r0, .L12
+ 122:main.c        ****         {
+ 123:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
+ 193              		.loc 1 123 0
+ 194 00cc 9DF82920 		ldrb	r2, [sp, #41]	@ zero_extendqisi2
+ 195 00d0 8349     		ldr	r1, .L23+40
+ 196 00d2 0BA8     		add	r0, sp, #44
+ 197              	.LVL31:
+ 198 00d4 FFF7FEFF 		bl	sprintf
+ 199              	.LVL32:
+ 124:main.c        ****             UART_Debug_PutString(message); 
+ 200              		.loc 1 124 0
+ 201 00d8 0BA8     		add	r0, sp, #44
+ 202 00da FFF7FEFF 		bl	UART_Debug_PutString
+ 203              	.LVL33:
+ 204 00de 02E0     		b	.L11
+ 205              	.LVL34:
+ 206              	.L12:
+ 125:main.c        ****         }
+ 126:main.c        ****         else
+ 127:main.c        ****         {
+ 128:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
+ 207              		.loc 1 128 0
+ 208 00e0 8048     		ldr	r0, .L23+44
+ 209              	.LVL35:
+ 210 00e2 FFF7FEFF 		bl	UART_Debug_PutString
+ 211              	.LVL36:
+ 212              	.L11:
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 7
+
+
+ 129:main.c        ****         }
+ 130:main.c        ****     }
+ 131:main.c        ****     
+ 132:main.c        ****     /******************************************/
+ 133:main.c        ****     /*     Read Control Register 1 again      */
+ 134:main.c        ****     /******************************************/
+ 135:main.c        **** 
+ 136:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 213              		.loc 1 136 0
+ 214 00e6 0DF12902 		add	r2, sp, #41
+ 215 00ea 2021     		movs	r1, #32
+ 216 00ec 1820     		movs	r0, #24
+ 217 00ee FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 218              	.LVL37:
+ 137:main.c        ****                                         LIS3DH_CTRL_REG1,
+ 138:main.c        ****                                         &ctrl_reg1);
+ 139:main.c        ****     
+ 140:main.c        ****     if (error == NO_ERROR)
+ 219              		.loc 1 140 0
+ 220 00f2 48B9     		cbnz	r0, .L13
+ 141:main.c        ****     {
+ 142:main.c        ****         sprintf(message, "CONTROL REGISTER 1 after overwrite operation: 0x%02X\r\n", ctrl_reg1);
+ 221              		.loc 1 142 0
+ 222 00f4 9DF82920 		ldrb	r2, [sp, #41]	@ zero_extendqisi2
+ 223 00f8 7B49     		ldr	r1, .L23+48
+ 224 00fa 0BA8     		add	r0, sp, #44
+ 225              	.LVL38:
+ 226 00fc FFF7FEFF 		bl	sprintf
+ 227              	.LVL39:
+ 143:main.c        ****         UART_Debug_PutString(message); 
+ 228              		.loc 1 143 0
+ 229 0100 0BA8     		add	r0, sp, #44
+ 230 0102 FFF7FEFF 		bl	UART_Debug_PutString
+ 231              	.LVL40:
+ 232 0106 02E0     		b	.L14
+ 233              	.LVL41:
+ 234              	.L13:
+ 144:main.c        ****     }
+ 145:main.c        ****     else
+ 146:main.c        ****     {
+ 147:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
+ 235              		.loc 1 147 0
+ 236 0108 7348     		ldr	r0, .L23+32
+ 237              	.LVL42:
+ 238 010a FFF7FEFF 		bl	UART_Debug_PutString
+ 239              	.LVL43:
+ 240              	.L14:
+ 148:main.c        ****     }
+ 149:main.c        ****     
+ 150:main.c        ****         /******************************************/
+ 151:main.c        ****     /*     Read Control Register 4    */
+ 152:main.c        ****     /******************************************/
+ 153:main.c        ****     
+ 154:main.c        ****     uint8_t ctrl_reg4;
+ 155:main.c        **** 
+ 156:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 241              		.loc 1 156 0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 8
+
+
+ 242 010e 0AAA     		add	r2, sp, #40
+ 243 0110 2321     		movs	r1, #35
+ 244 0112 1820     		movs	r0, #24
+ 245 0114 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 246              	.LVL44:
+ 157:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 158:main.c        ****                                         &ctrl_reg4);
+ 159:main.c        ****     
+ 160:main.c        ****     if (error == NO_ERROR)
+ 247              		.loc 1 160 0
+ 248 0118 48B9     		cbnz	r0, .L15
+ 161:main.c        ****     {
+ 162:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
+ 249              		.loc 1 162 0
+ 250 011a 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
+ 251 011e 7349     		ldr	r1, .L23+52
+ 252 0120 0BA8     		add	r0, sp, #44
+ 253              	.LVL45:
+ 254 0122 FFF7FEFF 		bl	sprintf
+ 255              	.LVL46:
+ 163:main.c        ****         UART_Debug_PutString(message); 
+ 256              		.loc 1 163 0
+ 257 0126 0BA8     		add	r0, sp, #44
+ 258 0128 FFF7FEFF 		bl	UART_Debug_PutString
+ 259              	.LVL47:
+ 260 012c 02E0     		b	.L16
+ 261              	.LVL48:
+ 262              	.L15:
+ 164:main.c        ****     }
+ 165:main.c        ****     else
+ 166:main.c        ****     {
+ 167:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
+ 263              		.loc 1 167 0
+ 264 012e 7048     		ldr	r0, .L23+56
+ 265              	.LVL49:
+ 266 0130 FFF7FEFF 		bl	UART_Debug_PutString
+ 267              	.LVL50:
+ 268              	.L16:
+ 168:main.c        ****     }
+ 169:main.c        ****     
+ 170:main.c        ****     
+ 171:main.c        ****     ctrl_reg4 = LIS3DH_CTRL_REG4_BDU_ACTIVE; // must be changed to the appropriate value, bit HR 0
+ 269              		.loc 1 171 0
+ 270 0134 8822     		movs	r2, #136
+ 271 0136 18AC     		add	r4, sp, #96
+ 272              	.LVL51:
+ 273 0138 04F8382D 		strb	r2, [r4, #-56]!
+ 172:main.c        ****     
+ 173:main.c        ****     error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 274              		.loc 1 173 0
+ 275 013c 2321     		movs	r1, #35
+ 276 013e 1820     		movs	r0, #24
+ 277 0140 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
+ 278              	.LVL52:
+ 174:main.c        ****                                          LIS3DH_CTRL_REG4,
+ 175:main.c        ****                                          ctrl_reg4);
+ 176:main.c        ****     
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 9
+
+
+ 177:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 279              		.loc 1 177 0
+ 280 0144 2246     		mov	r2, r4
+ 281 0146 2321     		movs	r1, #35
+ 282 0148 1820     		movs	r0, #24
+ 283 014a FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 284              	.LVL53:
+ 178:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 179:main.c        ****                                         &ctrl_reg4);
+ 180:main.c        ****     
+ 181:main.c        ****     
+ 182:main.c        ****     if (error == NO_ERROR)
+ 285              		.loc 1 182 0
+ 286 014e 48B9     		cbnz	r0, .L17
+ 183:main.c        ****     {
+ 184:main.c        ****         sprintf(message, "CONTROL REGISTER 4 after being updated: 0x%02X\r\n", ctrl_reg4);
+ 287              		.loc 1 184 0
+ 288 0150 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
+ 289 0154 6749     		ldr	r1, .L23+60
+ 290 0156 0BA8     		add	r0, sp, #44
+ 291              	.LVL54:
+ 292 0158 FFF7FEFF 		bl	sprintf
+ 293              	.LVL55:
+ 185:main.c        ****         UART_Debug_PutString(message); 
+ 294              		.loc 1 185 0
+ 295 015c 0BA8     		add	r0, sp, #44
+ 296 015e FFF7FEFF 		bl	UART_Debug_PutString
+ 297              	.LVL56:
+ 298 0162 02E0     		b	.L18
+ 299              	.LVL57:
+ 300              	.L17:
+ 186:main.c        ****     }
+ 187:main.c        ****     else
+ 188:main.c        ****     {
+ 189:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
+ 301              		.loc 1 189 0
+ 302 0164 6248     		ldr	r0, .L23+56
+ 303              	.LVL58:
+ 304 0166 FFF7FEFF 		bl	UART_Debug_PutString
+ 305              	.LVL59:
+ 306              	.L18:
+ 190:main.c        ****     }
+ 191:main.c        ****     
+ 192:main.c        ****      
+ 193:main.c        ****     
+ 194:main.c        ****     int16_t OutX;//used to merge the two uint8_t value from the array XYZData relative to the x dir
+ 195:main.c        ****     int16_t OutY;//used to merge the two uint8_t value from the array XYZData relative to the y dir
+ 196:main.c        ****     int16_t OutZ;//used to merge the two uint8_t value from the array XYZData relative to the z dir
+ 197:main.c        ****     float32 OutXfloat;//used to save data of x acceleration with decimals
+ 198:main.c        ****     float32 OutYfloat;//used to save data of y acceleration with decimals
+ 199:main.c        ****     float32 OutZfloat;//used to save data of z acceleration with decimals
+ 200:main.c        ****     uint8_t header = 0xA0;//header for UART comunication
+ 201:main.c        ****     uint8_t footer = 0xC0;//header for UART comunication 
+ 202:main.c        ****     uint8_t XYZData[6];//Array used to read data
+ 203:main.c        ****     uint8_t register_count=5;//it is 5--> we need to read six value, from *(data) to  *(data+5)
+ 204:main.c        ****     uint8_t OutArrayFloat[14];//array to be sent through UART
+ 205:main.c        **** 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 10
+
+
+ 206:main.c        ****     OutArrayFloat[0] = header;
+ 307              		.loc 1 206 0
+ 308 016a A023     		movs	r3, #160
+ 309 016c 8DF81030 		strb	r3, [sp, #16]
+ 207:main.c        ****     OutArrayFloat[13] = footer;
+ 310              		.loc 1 207 0
+ 311 0170 C023     		movs	r3, #192
+ 312 0172 8DF81D30 		strb	r3, [sp, #29]
+ 313              	.L19:
+ 208:main.c        ****     
+ 209:main.c        ****     uint8_t accx[sizeof(float)];//useful to send float as uint8_t
+ 210:main.c        ****     uint8_t accy[sizeof(float)];//useful to send float as uint8_t
+ 211:main.c        ****     uint8_t accz[sizeof(float)];//useful to send float as uint8_t
+ 212:main.c        ****     
+ 213:main.c        ****     for(;;)
+ 214:main.c        ****     {
+ 215:main.c        ****         //verify new Data is available using StatusReg information
+ 216:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 314              		.loc 1 216 0
+ 315 0176 0DF12A02 		add	r2, sp, #42
+ 316 017a 2721     		movs	r1, #39
+ 317 017c 1820     		movs	r0, #24
+ 318 017e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 319              	.LVL60:
+ 217:main.c        ****                                         LIS3DH_STATUS_REG,
+ 218:main.c        ****                                         &status_register);
+ 219:main.c        ****         
+ 220:main.c        ****         // only if there are new Data  available, we comunicate with the UART
+ 221:main.c        ****         if(status_register & (1<<LIS3DH_STATUS_REG_ACTIVE_ZYXDA))
+ 320              		.loc 1 221 0
+ 321 0182 9DF82A30 		ldrb	r3, [sp, #42]	@ zero_extendqisi2
+ 322 0186 13F0080F 		tst	r3, #8
+ 323 018a F4D0     		beq	.L19
+ 222:main.c        ****         {
+ 223:main.c        ****             
+ 224:main.c        ****             //Use of multi-read function to read 6 consequent registers starting from OUT_X_L
+ 225:main.c        ****             error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+ 324              		.loc 1 225 0
+ 325 018c 08AB     		add	r3, sp, #32
+ 326 018e 0522     		movs	r2, #5
+ 327 0190 2821     		movs	r1, #40
+ 328 0192 1820     		movs	r0, #24
+ 329 0194 FFF7FEFF 		bl	I2C_Peripheral_ReadRegisterMulti
+ 330              	.LVL61:
+ 226:main.c        ****                                             LIS3DH_OUT_X_L,
+ 227:main.c        ****                                             register_count,
+ 228:main.c        ****                                             &XYZData[0]);
+ 229:main.c        ****            
+ 230:main.c        ****             if(error == NO_ERROR)
+ 331              		.loc 1 230 0
+ 332 0198 0028     		cmp	r0, #0
+ 333 019a ECD1     		bne	.L19
+ 231:main.c        ****             {
+ 232:main.c        **** 
+ 233:main.c        ****                 OutX = (int16)((XYZData[0] | (XYZData[1]<<8)))>>4;//merge data into a single int16 
+ 334              		.loc 1 233 0
+ 335 019c 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 11
+
+
+ 336 01a0 9DF82100 		ldrb	r0, [sp, #33]	@ zero_extendqisi2
+ 337              	.LVL62:
+ 338 01a4 43EA0020 		orr	r0, r3, r0, lsl #8
+ 339              	.LVL63:
+ 234:main.c        ****                 
+ 235:main.c        ****                 OutXfloat=(float32)OutX;//cast float
+ 340              		.loc 1 235 0
+ 341 01a8 40F30B10 		sbfx	r0, r0, #4, #12
+ 342              	.LVL64:
+ 343 01ac FFF7FEFF 		bl	__aeabi_i2f
+ 344              	.LVL65:
+ 236:main.c        ****                 
+ 237:main.c        ****                 OutXfloat=(OutXfloat*9.81)/1024;//conversion in m/s^2
+ 345              		.loc 1 237 0
+ 346 01b0 FFF7FEFF 		bl	__aeabi_f2d
+ 347              	.LVL66:
+ 348 01b4 40A3     		adr	r3, .L23
+ 349 01b6 D3E90023 		ldrd	r2, [r3]
+ 350 01ba FFF7FEFF 		bl	__aeabi_dmul
+ 351              	.LVL67:
+ 352 01be 0022     		movs	r2, #0
+ 353 01c0 4D4B     		ldr	r3, .L23+64
+ 354 01c2 FFF7FEFF 		bl	__aeabi_dmul
+ 355              	.LVL68:
+ 356 01c6 FFF7FEFF 		bl	__aeabi_d2f
+ 357              	.LVL69:
+ 238:main.c        ****                 
+ 239:main.c        ****                 OutXfloat=roundf(OutXfloat*1000);//save three decimals
+ 358              		.loc 1 239 0
+ 359 01ca 4C49     		ldr	r1, .L23+68
+ 360 01cc FFF7FEFF 		bl	__aeabi_fmul
+ 361              	.LVL70:
+ 362 01d0 FFF7FEFF 		bl	roundf
+ 363              	.LVL71:
+ 364 01d4 0546     		mov	r5, r0
+ 365              	.LVL72:
+ 240:main.c        ****                 
+ 241:main.c        ****                 
+ 242:main.c        ****                 
+ 243:main.c        ****                 
+ 244:main.c        ****                 OutY = (int16)((XYZData[2] | (XYZData[3]<<8)))>>4;//merge data into a single int16 
+ 366              		.loc 1 244 0
+ 367 01d6 9DF82230 		ldrb	r3, [sp, #34]	@ zero_extendqisi2
+ 368 01da 9DF82300 		ldrb	r0, [sp, #35]	@ zero_extendqisi2
+ 369              	.LVL73:
+ 370 01de 43EA0020 		orr	r0, r3, r0, lsl #8
+ 371              	.LVL74:
+ 245:main.c        ****                 
+ 246:main.c        ****                 OutYfloat=(float32)OutY;//cast float
+ 372              		.loc 1 246 0
+ 373 01e2 40F30B10 		sbfx	r0, r0, #4, #12
+ 374              	.LVL75:
+ 375 01e6 FFF7FEFF 		bl	__aeabi_i2f
+ 376              	.LVL76:
+ 247:main.c        ****                 
+ 248:main.c        ****                 OutYfloat=(OutYfloat*9.81)/1024;//conversion in m/s^2
+ 377              		.loc 1 248 0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 12
+
+
+ 378 01ea FFF7FEFF 		bl	__aeabi_f2d
+ 379              	.LVL77:
+ 380 01ee 32A3     		adr	r3, .L23
+ 381 01f0 D3E90023 		ldrd	r2, [r3]
+ 382 01f4 FFF7FEFF 		bl	__aeabi_dmul
+ 383              	.LVL78:
+ 384 01f8 0022     		movs	r2, #0
+ 385 01fa 3F4B     		ldr	r3, .L23+64
+ 386 01fc FFF7FEFF 		bl	__aeabi_dmul
+ 387              	.LVL79:
+ 388 0200 FFF7FEFF 		bl	__aeabi_d2f
+ 389              	.LVL80:
+ 249:main.c        ****                  
+ 250:main.c        ****                 OutYfloat=roundf(OutYfloat*1000);//save three decimals
+ 390              		.loc 1 250 0
+ 391 0204 3D49     		ldr	r1, .L23+68
+ 392 0206 FFF7FEFF 		bl	__aeabi_fmul
+ 393              	.LVL81:
+ 394 020a FFF7FEFF 		bl	roundf
+ 395              	.LVL82:
+ 396 020e 0446     		mov	r4, r0
+ 397              	.LVL83:
+ 251:main.c        ****                 
+ 252:main.c        ****                 
+ 253:main.c        ****                 
+ 254:main.c        ****                 OutZ = (int16)((XYZData[4] | (XYZData[5]<<8)))>>4;//merge data into a single int16 
+ 398              		.loc 1 254 0
+ 399 0210 9DF82430 		ldrb	r3, [sp, #36]	@ zero_extendqisi2
+ 400 0214 9DF82500 		ldrb	r0, [sp, #37]	@ zero_extendqisi2
+ 401              	.LVL84:
+ 402 0218 43EA0020 		orr	r0, r3, r0, lsl #8
+ 403              	.LVL85:
+ 255:main.c        ****                 
+ 256:main.c        ****                 OutZfloat=(float32)OutZ;//cast float
+ 404              		.loc 1 256 0
+ 405 021c 40F30B10 		sbfx	r0, r0, #4, #12
+ 406              	.LVL86:
+ 407 0220 FFF7FEFF 		bl	__aeabi_i2f
+ 408              	.LVL87:
+ 257:main.c        ****        
+ 258:main.c        ****                 OutZfloat=(OutZfloat*9.81)/1024;//conversion in m/s^2
+ 409              		.loc 1 258 0
+ 410 0224 FFF7FEFF 		bl	__aeabi_f2d
+ 411              	.LVL88:
+ 412 0228 23A3     		adr	r3, .L23
+ 413 022a D3E90023 		ldrd	r2, [r3]
+ 414 022e FFF7FEFF 		bl	__aeabi_dmul
+ 415              	.LVL89:
+ 416 0232 0022     		movs	r2, #0
+ 417 0234 304B     		ldr	r3, .L23+64
+ 418 0236 FFF7FEFF 		bl	__aeabi_dmul
+ 419              	.LVL90:
+ 420 023a FFF7FEFF 		bl	__aeabi_d2f
+ 421              	.LVL91:
+ 259:main.c        ****                 
+ 260:main.c        ****                 OutZfloat=roundf(OutZfloat*1000);//save three decimals
+ 422              		.loc 1 260 0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 13
+
+
+ 423 023e 2F49     		ldr	r1, .L23+68
+ 424 0240 FFF7FEFF 		bl	__aeabi_fmul
+ 425              	.LVL92:
+ 426 0244 FFF7FEFF 		bl	roundf
+ 427              	.LVL93:
+ 261:main.c        ****                 
+ 262:main.c        ****                  
+ 263:main.c        ****                 
+ 264:main.c        ****                 *(float*)(accx)=OutXfloat;//save the float into the uint8_t through the pointer
+ 428              		.loc 1 264 0
+ 429 0248 0395     		str	r5, [sp, #12]	@ float
+ 265:main.c        ****                 *(float*)(accy)=OutYfloat;//save the float into the uint8_t through the pointer
+ 430              		.loc 1 265 0
+ 431 024a 0294     		str	r4, [sp, #8]	@ float
+ 266:main.c        ****                 *(float*)(accz)=OutZfloat;//save the float into the uint8_t through the pointer
+ 432              		.loc 1 266 0
+ 433 024c 0190     		str	r0, [sp, #4]	@ float
+ 267:main.c        ****                 
+ 268:main.c        **** 
+ 269:main.c        ****                 OutArrayFloat[1] = accx[0]  ;//copy of the LSB of the acc in the x direction into t
+ 434              		.loc 1 269 0
+ 435 024e 9DF80C30 		ldrb	r3, [sp, #12]	@ zero_extendqisi2
+ 436 0252 8DF81130 		strb	r3, [sp, #17]
+ 270:main.c        ****                 OutArrayFloat[2] = accx[1] ;
+ 437              		.loc 1 270 0
+ 438 0256 9DF80D30 		ldrb	r3, [sp, #13]	@ zero_extendqisi2
+ 439 025a 8DF81230 		strb	r3, [sp, #18]
+ 271:main.c        ****                 OutArrayFloat[3] = accx[2] ;
+ 440              		.loc 1 271 0
+ 441 025e 9DF80E30 		ldrb	r3, [sp, #14]	@ zero_extendqisi2
+ 442 0262 8DF81330 		strb	r3, [sp, #19]
+ 272:main.c        ****                 OutArrayFloat[4] = accx[3] ;//copy of the MSB of the acc in the x direction into th
+ 443              		.loc 1 272 0
+ 444 0266 9DF80F30 		ldrb	r3, [sp, #15]	@ zero_extendqisi2
+ 445 026a 8DF81430 		strb	r3, [sp, #20]
+ 273:main.c        ****                 OutArrayFloat[5] = accy[0] ;//copy of the LSB of the acc in the y direction into th
+ 446              		.loc 1 273 0
+ 447 026e 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
+ 448 0272 8DF81530 		strb	r3, [sp, #21]
+ 274:main.c        ****                 OutArrayFloat[6] = accy[1] ;
+ 449              		.loc 1 274 0
+ 450 0276 9DF80930 		ldrb	r3, [sp, #9]	@ zero_extendqisi2
+ 451 027a 8DF81630 		strb	r3, [sp, #22]
+ 275:main.c        ****                 OutArrayFloat[7] = accy[2] ;
+ 452              		.loc 1 275 0
+ 453 027e 9DF80A30 		ldrb	r3, [sp, #10]	@ zero_extendqisi2
+ 454 0282 8DF81730 		strb	r3, [sp, #23]
+ 276:main.c        ****                 OutArrayFloat[8] = accy[3] ;//copy of the MSB of the acc in the y direction into th
+ 455              		.loc 1 276 0
+ 456 0286 9DF80B30 		ldrb	r3, [sp, #11]	@ zero_extendqisi2
+ 457 028a 8DF81830 		strb	r3, [sp, #24]
+ 277:main.c        ****                 OutArrayFloat[9] = accz[0] ;//copy of the LSB of the acc in the z direction into th
+ 458              		.loc 1 277 0
+ 459 028e 9DF80430 		ldrb	r3, [sp, #4]	@ zero_extendqisi2
+ 460 0292 8DF81930 		strb	r3, [sp, #25]
+ 278:main.c        ****                 OutArrayFloat[10] =accz[1] ;
+ 461              		.loc 1 278 0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 14
+
+
+ 462 0296 9DF80530 		ldrb	r3, [sp, #5]	@ zero_extendqisi2
+ 463 029a 8DF81A30 		strb	r3, [sp, #26]
+ 279:main.c        ****                 OutArrayFloat[11] =accz[2] ;
+ 464              		.loc 1 279 0
+ 465 029e 9DF80630 		ldrb	r3, [sp, #6]	@ zero_extendqisi2
+ 466 02a2 8DF81B30 		strb	r3, [sp, #27]
+ 280:main.c        ****                 OutArrayFloat[12] =accz[3] ;//copy of the MSB of the acc in the z direction into th
+ 467              		.loc 1 280 0
+ 468 02a6 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 469 02aa 8DF81C30 		strb	r3, [sp, #28]
+ 281:main.c        ****                 UART_Debug_PutArray(OutArrayFloat, 14);
+ 470              		.loc 1 281 0
+ 471 02ae 0E21     		movs	r1, #14
+ 472 02b0 04A8     		add	r0, sp, #16
+ 473              	.LVL94:
+ 474 02b2 FFF7FEFF 		bl	UART_Debug_PutArray
+ 475              	.LVL95:
+ 476 02b6 5EE7     		b	.L19
+ 477              	.L24:
+ 478              		.align	3
+ 479              	.L23:
+ 480 02b8 1F85EB51 		.word	1374389535
+ 481 02bc B89E2340 		.word	1076076216
+ 482 02c0 00000000 		.word	.LC0
+ 483 02c4 20000000 		.word	.LC1
+ 484 02c8 48000000 		.word	.LC2
+ 485 02cc 6C000000 		.word	.LC3
+ 486 02d0 88000000 		.word	.LC4
+ 487 02d4 C4000000 		.word	.LC5
+ 488 02d8 E4000000 		.word	.LC6
+ 489 02dc 20010000 		.word	.LC7
+ 490 02e0 3C010000 		.word	.LC8
+ 491 02e4 74010000 		.word	.LC9
+ 492 02e8 B0010000 		.word	.LC10
+ 493 02ec E8010000 		.word	.LC11
+ 494 02f0 08020000 		.word	.LC12
+ 495 02f4 44020000 		.word	.LC13
+ 496 02f8 0000503F 		.word	1062207488
+ 497 02fc 00007A44 		.word	1148846080
+ 498              		.cfi_endproc
+ 499              	.LFE64:
+ 500              		.size	main, .-main
+ 501              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 502              		.align	2
+ 503              	.LC0:
+ 504 0000 44657669 		.ascii	"Device 0x%02X is connected\015\012\000"
+ 504      63652030 
+ 504      78253032 
+ 504      58206973 
+ 504      20636F6E 
+ 505 001d 000000   		.space	3
+ 506              	.LC1:
+ 507 0020 57484F20 		.ascii	"WHO AM I REG: 0x%02X [Expected: 0x33]\015\012\000"
+ 507      414D2049 
+ 507      20524547 
+ 507      3A203078 
+ 507      25303258 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 15
+
+
+ 508              	.LC2:
+ 509 0048 4572726F 		.ascii	"Error occurred during I2C comm\015\012\000"
+ 509      72206F63 
+ 509      63757272 
+ 509      65642064 
+ 509      7572696E 
+ 510 0069 000000   		.space	3
+ 511              	.LC3:
+ 512 006c 53544154 		.ascii	"STATUS REGISTER: 0x%02X\015\012\000"
+ 512      55532052 
+ 512      45474953 
+ 512      5445523A 
+ 512      20307825 
+ 513 0086 0000     		.space	2
+ 514              	.LC4:
+ 515 0088 4572726F 		.ascii	"Error occurred during I2C comm to read status regis"
+ 515      72206F63 
+ 515      63757272 
+ 515      65642064 
+ 515      7572696E 
+ 516 00bb 7465720D 		.ascii	"ter\015\012\000"
+ 516      0A00
+ 517 00c1 000000   		.space	3
+ 518              	.LC5:
+ 519 00c4 434F4E54 		.ascii	"CONTROL REGISTER 1: 0x%02X\015\012\000"
+ 519      524F4C20 
+ 519      52454749 
+ 519      53544552 
+ 519      20313A20 
+ 520 00e1 000000   		.space	3
+ 521              	.LC6:
+ 522 00e4 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
+ 522      72206F63 
+ 522      63757272 
+ 522      65642064 
+ 522      7572696E 
+ 523 0117 73746572 		.ascii	"ster 1\015\012\000"
+ 523      20310D0A 
+ 523      00
+ 524              	.LC7:
+ 525 0120 0D0A5772 		.ascii	"\015\012Writing new values..\015\012\000"
+ 525      6974696E 
+ 525      67206E65 
+ 525      77207661 
+ 525      6C756573 
+ 526 0139 000000   		.space	3
+ 527              	.LC8:
+ 528 013c 434F4E54 		.ascii	"CONTROL REGISTER 1 successfully written as: 0x%02X\015"
+ 528      524F4C20 
+ 528      52454749 
+ 528      53544552 
+ 528      20312073 
+ 529 016f 0A00     		.ascii	"\012\000"
+ 530 0171 000000   		.space	3
+ 531              	.LC9:
+ 532 0174 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
+ 532      72206F63 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 16
+
+
+ 532      63757272 
+ 532      65642064 
+ 532      7572696E 
+ 533 01a7 74657220 		.ascii	"ter 1\015\012\000"
+ 533      310D0A00 
+ 534 01af 00       		.space	1
+ 535              	.LC10:
+ 536 01b0 434F4E54 		.ascii	"CONTROL REGISTER 1 after overwrite operation: 0x%02"
+ 536      524F4C20 
+ 536      52454749 
+ 536      53544552 
+ 536      20312061 
+ 537 01e3 580D0A00 		.ascii	"X\015\012\000"
+ 538 01e7 00       		.space	1
+ 539              	.LC11:
+ 540 01e8 434F4E54 		.ascii	"CONTROL REGISTER 4: 0x%02X\015\012\000"
+ 540      524F4C20 
+ 540      52454749 
+ 540      53544552 
+ 540      20343A20 
+ 541 0205 000000   		.space	3
+ 542              	.LC12:
+ 543 0208 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
+ 543      72206F63 
+ 543      63757272 
+ 543      65642064 
+ 543      7572696E 
+ 544 023b 73746572 		.ascii	"ster4\015\012\000"
+ 544      340D0A00 
+ 545 0243 00       		.space	1
+ 546              	.LC13:
+ 547 0244 434F4E54 		.ascii	"CONTROL REGISTER 4 after being updated: 0x%02X\015\012"
+ 547      524F4C20 
+ 547      52454749 
+ 547      53544552 
+ 547      20342061 
+ 548 0274 00       		.ascii	"\000"
+ 549              		.text
+ 550              	.Letext0:
+ 551              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 552              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 553              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 554              		.file 5 "ErrorCodes.h"
+ 555              		.file 6 "I2C_Interface.h"
+ 556              		.file 7 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 557              		.file 8 "Generated_Source\\PSoC5/UART_Debug.h"
+ 558              		.file 9 "Generated_Source\\PSoC5/CyLib.h"
+ 559              		.file 10 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4
+ 560              		.file 11 "Generated_Source\\PSoC5/core_cm3.h"
+ 561              		.section	.debug_info,"",%progbits
+ 562              	.Ldebug_info0:
+ 563 0000 2A070000 		.4byte	0x72a
+ 564 0004 0400     		.2byte	0x4
+ 565 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 566 000a 04       		.byte	0x4
+ 567 000b 01       		.uleb128 0x1
+ 568 000c 74010000 		.4byte	.LASF56
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 17
+
+
+ 569 0010 0C       		.byte	0xc
+ 570 0011 31030000 		.4byte	.LASF57
+ 571 0015 BA000000 		.4byte	.LASF58
+ 572 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 573 001d 00000000 		.4byte	0
+ 574 0021 00000000 		.4byte	.Ldebug_line0
+ 575 0025 02       		.uleb128 0x2
+ 576 0026 01       		.byte	0x1
+ 577 0027 06       		.byte	0x6
+ 578 0028 A2030000 		.4byte	.LASF0
+ 579 002c 03       		.uleb128 0x3
+ 580 002d 0F000000 		.4byte	.LASF2
+ 581 0031 02       		.byte	0x2
+ 582 0032 1D       		.byte	0x1d
+ 583 0033 37000000 		.4byte	0x37
+ 584 0037 02       		.uleb128 0x2
+ 585 0038 01       		.byte	0x1
+ 586 0039 08       		.byte	0x8
+ 587 003a 66010000 		.4byte	.LASF1
+ 588 003e 03       		.uleb128 0x3
+ 589 003f 86020000 		.4byte	.LASF3
+ 590 0043 02       		.byte	0x2
+ 591 0044 29       		.byte	0x29
+ 592 0045 49000000 		.4byte	0x49
+ 593 0049 02       		.uleb128 0x2
+ 594 004a 02       		.byte	0x2
+ 595 004b 05       		.byte	0x5
+ 596 004c 63030000 		.4byte	.LASF4
+ 597 0050 02       		.uleb128 0x2
+ 598 0051 02       		.byte	0x2
+ 599 0052 07       		.byte	0x7
+ 600 0053 1A020000 		.4byte	.LASF5
+ 601 0057 03       		.uleb128 0x3
+ 602 0058 4F000000 		.4byte	.LASF6
+ 603 005c 02       		.byte	0x2
+ 604 005d 3F       		.byte	0x3f
+ 605 005e 62000000 		.4byte	0x62
+ 606 0062 02       		.uleb128 0x2
+ 607 0063 04       		.byte	0x4
+ 608 0064 05       		.byte	0x5
+ 609 0065 61000000 		.4byte	.LASF7
+ 610 0069 02       		.uleb128 0x2
+ 611 006a 04       		.byte	0x4
+ 612 006b 07       		.byte	0x7
+ 613 006c 08020000 		.4byte	.LASF8
+ 614 0070 02       		.uleb128 0x2
+ 615 0071 08       		.byte	0x8
+ 616 0072 05       		.byte	0x5
+ 617 0073 12030000 		.4byte	.LASF9
+ 618 0077 02       		.uleb128 0x2
+ 619 0078 08       		.byte	0x8
+ 620 0079 07       		.byte	0x7
+ 621 007a C0020000 		.4byte	.LASF10
+ 622 007e 04       		.uleb128 0x4
+ 623 007f 04       		.byte	0x4
+ 624 0080 05       		.byte	0x5
+ 625 0081 696E7400 		.ascii	"int\000"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 18
+
+
+ 626 0085 02       		.uleb128 0x2
+ 627 0086 04       		.byte	0x4
+ 628 0087 07       		.byte	0x7
+ 629 0088 AE020000 		.4byte	.LASF11
+ 630 008c 03       		.uleb128 0x3
+ 631 008d D7020000 		.4byte	.LASF12
+ 632 0091 03       		.byte	0x3
+ 633 0092 18       		.byte	0x18
+ 634 0093 2C000000 		.4byte	0x2c
+ 635 0097 03       		.uleb128 0x3
+ 636 0098 DF020000 		.4byte	.LASF13
+ 637 009c 03       		.byte	0x3
+ 638 009d 20       		.byte	0x20
+ 639 009e 3E000000 		.4byte	0x3e
+ 640 00a2 03       		.uleb128 0x3
+ 641 00a3 A5000000 		.4byte	.LASF14
+ 642 00a7 03       		.byte	0x3
+ 643 00a8 2C       		.byte	0x2c
+ 644 00a9 57000000 		.4byte	0x57
+ 645 00ad 05       		.uleb128 0x5
+ 646 00ae 02020000 		.4byte	.LASF15
+ 647 00b2 04       		.byte	0x4
+ 648 00b3 E801     		.2byte	0x1e8
+ 649 00b5 49000000 		.4byte	0x49
+ 650 00b9 05       		.uleb128 0x5
+ 651 00ba 7E020000 		.4byte	.LASF16
+ 652 00be 04       		.byte	0x4
+ 653 00bf EA01     		.2byte	0x1ea
+ 654 00c1 C5000000 		.4byte	0xc5
+ 655 00c5 02       		.uleb128 0x2
+ 656 00c6 04       		.byte	0x4
+ 657 00c7 04       		.byte	0x4
+ 658 00c8 AD000000 		.4byte	.LASF17
+ 659 00cc 02       		.uleb128 0x2
+ 660 00cd 08       		.byte	0x8
+ 661 00ce 04       		.byte	0x4
+ 662 00cf 34020000 		.4byte	.LASF18
+ 663 00d3 02       		.uleb128 0x2
+ 664 00d4 01       		.byte	0x1
+ 665 00d5 08       		.byte	0x8
+ 666 00d6 38030000 		.4byte	.LASF19
+ 667 00da 06       		.uleb128 0x6
+ 668 00db 01       		.byte	0x1
+ 669 00dc 37000000 		.4byte	0x37
+ 670 00e0 05       		.byte	0x5
+ 671 00e1 15       		.byte	0x15
+ 672 00e2 F3000000 		.4byte	0xf3
+ 673 00e6 07       		.uleb128 0x7
+ 674 00e7 77030000 		.4byte	.LASF20
+ 675 00eb 00       		.byte	0
+ 676 00ec 07       		.uleb128 0x7
+ 677 00ed 80030000 		.4byte	.LASF21
+ 678 00f1 01       		.byte	0x1
+ 679 00f2 00       		.byte	0
+ 680 00f3 03       		.uleb128 0x3
+ 681 00f4 8C000000 		.4byte	.LASF22
+ 682 00f8 05       		.byte	0x5
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 19
+
+
+ 683 00f9 18       		.byte	0x18
+ 684 00fa DA000000 		.4byte	0xda
+ 685 00fe 02       		.uleb128 0x2
+ 686 00ff 08       		.byte	0x8
+ 687 0100 04       		.byte	0x4
+ 688 0101 96030000 		.4byte	.LASF23
+ 689 0105 02       		.uleb128 0x2
+ 690 0106 04       		.byte	0x4
+ 691 0107 07       		.byte	0x7
+ 692 0108 03030000 		.4byte	.LASF24
+ 693 010c 08       		.uleb128 0x8
+ 694 010d 79020000 		.4byte	.LASF59
+ 695 0111 01       		.byte	0x1
+ 696 0112 1B       		.byte	0x1b
+ 697 0113 7E000000 		.4byte	0x7e
+ 698 0117 00000000 		.4byte	.LFB64
+ 699 011b 00030000 		.4byte	.LFE64-.LFB64
+ 700 011f 01       		.uleb128 0x1
+ 701 0120 9C       		.byte	0x9c
+ 702 0121 62060000 		.4byte	0x662
+ 703 0125 09       		.uleb128 0x9
+ 704 0126 00000000 		.4byte	.LASF25
+ 705 012a 01       		.byte	0x1
+ 706 012b 26       		.byte	0x26
+ 707 012c 62060000 		.4byte	0x662
+ 708 0130 03       		.uleb128 0x3
+ 709 0131 91       		.byte	0x91
+ 710 0132 BC7F     		.sleb128 -68
+ 711 0134 09       		.uleb128 0x9
+ 712 0135 AE030000 		.4byte	.LASF26
+ 713 0139 01       		.byte	0x1
+ 714 013a 39       		.byte	0x39
+ 715 013b 8C000000 		.4byte	0x8c
+ 716 013f 03       		.uleb128 0x3
+ 717 0140 91       		.byte	0x91
+ 718 0141 BB7F     		.sleb128 -69
+ 719 0143 0A       		.uleb128 0xa
+ 720 0144 0C030000 		.4byte	.LASF27
+ 721 0148 01       		.byte	0x1
+ 722 0149 3A       		.byte	0x3a
+ 723 014a F3000000 		.4byte	0xf3
+ 724 014e 00000000 		.4byte	.LLST0
+ 725 0152 09       		.uleb128 0x9
+ 726 0153 86030000 		.4byte	.LASF28
+ 727 0157 01       		.byte	0x1
+ 728 0158 49       		.byte	0x49
+ 729 0159 8C000000 		.4byte	0x8c
+ 730 015d 03       		.uleb128 0x3
+ 731 015e 91       		.byte	0x91
+ 732 015f BA7F     		.sleb128 -70
+ 733 0161 09       		.uleb128 0x9
+ 734 0162 90020000 		.4byte	.LASF29
+ 735 0166 01       		.byte	0x1
+ 736 0167 5B       		.byte	0x5b
+ 737 0168 8C000000 		.4byte	0x8c
+ 738 016c 03       		.uleb128 0x3
+ 739 016d 91       		.byte	0x91
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 20
+
+
+ 740 016e B97F     		.sleb128 -71
+ 741 0170 09       		.uleb128 0x9
+ 742 0171 A4020000 		.4byte	.LASF30
+ 743 0175 01       		.byte	0x1
+ 744 0176 9A       		.byte	0x9a
+ 745 0177 8C000000 		.4byte	0x8c
+ 746 017b 03       		.uleb128 0x3
+ 747 017c 91       		.byte	0x91
+ 748 017d B87F     		.sleb128 -72
+ 749 017f 0A       		.uleb128 0xa
+ 750 0180 F4020000 		.4byte	.LASF31
+ 751 0184 01       		.byte	0x1
+ 752 0185 C2       		.byte	0xc2
+ 753 0186 97000000 		.4byte	0x97
+ 754 018a AD000000 		.4byte	.LLST1
+ 755 018e 0A       		.uleb128 0xa
+ 756 018f F9020000 		.4byte	.LASF32
+ 757 0193 01       		.byte	0x1
+ 758 0194 C3       		.byte	0xc3
+ 759 0195 97000000 		.4byte	0x97
+ 760 0199 E6000000 		.4byte	.LLST2
+ 761 019d 0A       		.uleb128 0xa
+ 762 019e FE020000 		.4byte	.LASF33
+ 763 01a2 01       		.byte	0x1
+ 764 01a3 C4       		.byte	0xc4
+ 765 01a4 97000000 		.4byte	0x97
+ 766 01a8 1F010000 		.4byte	.LLST3
+ 767 01ac 0A       		.uleb128 0xa
+ 768 01ad 3D030000 		.4byte	.LASF34
+ 769 01b1 01       		.byte	0x1
+ 770 01b2 C5       		.byte	0xc5
+ 771 01b3 B9000000 		.4byte	0xb9
+ 772 01b7 58010000 		.4byte	.LLST4
+ 773 01bb 0A       		.uleb128 0xa
+ 774 01bc E0030000 		.4byte	.LASF35
+ 775 01c0 01       		.byte	0x1
+ 776 01c1 C6       		.byte	0xc6
+ 777 01c2 B9000000 		.4byte	0xb9
+ 778 01c6 8C010000 		.4byte	.LLST5
+ 779 01ca 0A       		.uleb128 0xa
+ 780 01cb 6D030000 		.4byte	.LASF36
+ 781 01cf 01       		.byte	0x1
+ 782 01d0 C7       		.byte	0xc7
+ 783 01d1 B9000000 		.4byte	0xb9
+ 784 01d5 C0010000 		.4byte	.LLST6
+ 785 01d9 0B       		.uleb128 0xb
+ 786 01da 08000000 		.4byte	.LASF37
+ 787 01de 01       		.byte	0x1
+ 788 01df C8       		.byte	0xc8
+ 789 01e0 8C000000 		.4byte	0x8c
+ 790 01e4 A07F     		.sleb128 -96
+ 791 01e6 0B       		.uleb128 0xb
+ 792 01e7 2D020000 		.4byte	.LASF38
+ 793 01eb 01       		.byte	0x1
+ 794 01ec C9       		.byte	0xc9
+ 795 01ed 8C000000 		.4byte	0x8c
+ 796 01f1 40       		.sleb128 -64
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 21
+
+
+ 797 01f2 09       		.uleb128 0x9
+ 798 01f3 59000000 		.4byte	.LASF39
+ 799 01f7 01       		.byte	0x1
+ 800 01f8 CA       		.byte	0xca
+ 801 01f9 72060000 		.4byte	0x672
+ 802 01fd 03       		.uleb128 0x3
+ 803 01fe 91       		.byte	0x91
+ 804 01ff B07F     		.sleb128 -80
+ 805 0201 0C       		.uleb128 0xc
+ 806 0202 96000000 		.4byte	.LASF40
+ 807 0206 01       		.byte	0x1
+ 808 0207 CB       		.byte	0xcb
+ 809 0208 8C000000 		.4byte	0x8c
+ 810 020c 05       		.byte	0x5
+ 811 020d 09       		.uleb128 0x9
+ 812 020e 6A000000 		.4byte	.LASF41
+ 813 0212 01       		.byte	0x1
+ 814 0213 CC       		.byte	0xcc
+ 815 0214 82060000 		.4byte	0x682
+ 816 0218 03       		.uleb128 0x3
+ 817 0219 91       		.byte	0x91
+ 818 021a A07F     		.sleb128 -96
+ 819 021c 09       		.uleb128 0x9
+ 820 021d 9A020000 		.4byte	.LASF42
+ 821 0221 01       		.byte	0x1
+ 822 0222 D1       		.byte	0xd1
+ 823 0223 92060000 		.4byte	0x692
+ 824 0227 03       		.uleb128 0x3
+ 825 0228 91       		.byte	0x91
+ 826 0229 9C7F     		.sleb128 -100
+ 827 022b 09       		.uleb128 0x9
+ 828 022c 9F020000 		.4byte	.LASF43
+ 829 0230 01       		.byte	0x1
+ 830 0231 D2       		.byte	0xd2
+ 831 0232 92060000 		.4byte	0x692
+ 832 0236 03       		.uleb128 0x3
+ 833 0237 91       		.byte	0x91
+ 834 0238 987F     		.sleb128 -104
+ 835 023a 09       		.uleb128 0x9
+ 836 023b BB020000 		.4byte	.LASF44
+ 837 023f 01       		.byte	0x1
+ 838 0240 D3       		.byte	0xd3
+ 839 0241 92060000 		.4byte	0x692
+ 840 0245 03       		.uleb128 0x3
+ 841 0246 91       		.byte	0x91
+ 842 0247 947F     		.sleb128 -108
+ 843 0249 0D       		.uleb128 0xd
+ 844 024a 14000000 		.4byte	.LBB2
+ 845 024e 22000000 		.4byte	.LBE2-.LBB2
+ 846 0252 AD020000 		.4byte	0x2ad
+ 847 0256 0E       		.uleb128 0xe
+ 848 0257 6900     		.ascii	"i\000"
+ 849 0259 01       		.byte	0x1
+ 850 025a 29       		.byte	0x29
+ 851 025b 7E000000 		.4byte	0x7e
+ 852 025f F6010000 		.4byte	.LLST7
+ 853 0263 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 22
+
+
+ 854 0264 1E000000 		.4byte	.LVL4
+ 855 0268 B3060000 		.4byte	0x6b3
+ 856 026c 77020000 		.4byte	0x277
+ 857 0270 10       		.uleb128 0x10
+ 858 0271 01       		.uleb128 0x1
+ 859 0272 50       		.byte	0x50
+ 860 0273 02       		.uleb128 0x2
+ 861 0274 74       		.byte	0x74
+ 862 0275 00       		.sleb128 0
+ 863 0276 00       		.byte	0
+ 864 0277 0F       		.uleb128 0xf
+ 865 0278 2A000000 		.4byte	.LVL5
+ 866 027c BE060000 		.4byte	0x6be
+ 867 0280 9B020000 		.4byte	0x29b
+ 868 0284 10       		.uleb128 0x10
+ 869 0285 01       		.uleb128 0x1
+ 870 0286 50       		.byte	0x50
+ 871 0287 03       		.uleb128 0x3
+ 872 0288 91       		.byte	0x91
+ 873 0289 BC7F     		.sleb128 -68
+ 874 028b 10       		.uleb128 0x10
+ 875 028c 01       		.uleb128 0x1
+ 876 028d 51       		.byte	0x51
+ 877 028e 05       		.uleb128 0x5
+ 878 028f 03       		.byte	0x3
+ 879 0290 00000000 		.4byte	.LC0
+ 880 0294 10       		.uleb128 0x10
+ 881 0295 01       		.uleb128 0x1
+ 882 0296 52       		.byte	0x52
+ 883 0297 02       		.uleb128 0x2
+ 884 0298 74       		.byte	0x74
+ 885 0299 00       		.sleb128 0
+ 886 029a 00       		.byte	0
+ 887 029b 11       		.uleb128 0x11
+ 888 029c 30000000 		.4byte	.LVL6
+ 889 02a0 C9060000 		.4byte	0x6c9
+ 890 02a4 10       		.uleb128 0x10
+ 891 02a5 01       		.uleb128 0x1
+ 892 02a6 50       		.byte	0x50
+ 893 02a7 03       		.uleb128 0x3
+ 894 02a8 91       		.byte	0x91
+ 895 02a9 BC7F     		.sleb128 -68
+ 896 02ab 00       		.byte	0
+ 897 02ac 00       		.byte	0
+ 898 02ad 12       		.uleb128 0x12
+ 899 02ae 0A000000 		.4byte	.LVL0
+ 900 02b2 D4060000 		.4byte	0x6d4
+ 901 02b6 12       		.uleb128 0x12
+ 902 02b7 0E000000 		.4byte	.LVL1
+ 903 02bb DF060000 		.4byte	0x6df
+ 904 02bf 0F       		.uleb128 0xf
+ 905 02c0 14000000 		.4byte	.LVL2
+ 906 02c4 EA060000 		.4byte	0x6ea
+ 907 02c8 D2020000 		.4byte	0x2d2
+ 908 02cc 10       		.uleb128 0x10
+ 909 02cd 01       		.uleb128 0x1
+ 910 02ce 50       		.byte	0x50
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 23
+
+
+ 911 02cf 01       		.uleb128 0x1
+ 912 02d0 35       		.byte	0x35
+ 913 02d1 00       		.byte	0
+ 914 02d2 0F       		.uleb128 0xf
+ 915 02d3 42000000 		.4byte	.LVL8
+ 916 02d7 F5060000 		.4byte	0x6f5
+ 917 02db F1020000 		.4byte	0x2f1
+ 918 02df 10       		.uleb128 0x10
+ 919 02e0 01       		.uleb128 0x1
+ 920 02e1 50       		.byte	0x50
+ 921 02e2 01       		.uleb128 0x1
+ 922 02e3 48       		.byte	0x48
+ 923 02e4 10       		.uleb128 0x10
+ 924 02e5 01       		.uleb128 0x1
+ 925 02e6 51       		.byte	0x51
+ 926 02e7 01       		.uleb128 0x1
+ 927 02e8 3F       		.byte	0x3f
+ 928 02e9 10       		.uleb128 0x10
+ 929 02ea 01       		.uleb128 0x1
+ 930 02eb 52       		.byte	0x52
+ 931 02ec 03       		.uleb128 0x3
+ 932 02ed 91       		.byte	0x91
+ 933 02ee BB7F     		.sleb128 -69
+ 934 02f0 00       		.byte	0
+ 935 02f1 0F       		.uleb128 0xf
+ 936 02f2 50000000 		.4byte	.LVL10
+ 937 02f6 BE060000 		.4byte	0x6be
+ 938 02fa 0F030000 		.4byte	0x30f
+ 939 02fe 10       		.uleb128 0x10
+ 940 02ff 01       		.uleb128 0x1
+ 941 0300 50       		.byte	0x50
+ 942 0301 03       		.uleb128 0x3
+ 943 0302 91       		.byte	0x91
+ 944 0303 BC7F     		.sleb128 -68
+ 945 0305 10       		.uleb128 0x10
+ 946 0306 01       		.uleb128 0x1
+ 947 0307 51       		.byte	0x51
+ 948 0308 05       		.uleb128 0x5
+ 949 0309 03       		.byte	0x3
+ 950 030a 20000000 		.4byte	.LC1
+ 951 030e 00       		.byte	0
+ 952 030f 0F       		.uleb128 0xf
+ 953 0310 56000000 		.4byte	.LVL11
+ 954 0314 C9060000 		.4byte	0x6c9
+ 955 0318 24030000 		.4byte	0x324
+ 956 031c 10       		.uleb128 0x10
+ 957 031d 01       		.uleb128 0x1
+ 958 031e 50       		.byte	0x50
+ 959 031f 03       		.uleb128 0x3
+ 960 0320 91       		.byte	0x91
+ 961 0321 BC7F     		.sleb128 -68
+ 962 0323 00       		.byte	0
+ 963 0324 0F       		.uleb128 0xf
+ 964 0325 5E000000 		.4byte	.LVL14
+ 965 0329 C9060000 		.4byte	0x6c9
+ 966 032d 3B030000 		.4byte	0x33b
+ 967 0331 10       		.uleb128 0x10
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 24
+
+
+ 968 0332 01       		.uleb128 0x1
+ 969 0333 50       		.byte	0x50
+ 970 0334 05       		.uleb128 0x5
+ 971 0335 03       		.byte	0x3
+ 972 0336 48000000 		.4byte	.LC2
+ 973 033a 00       		.byte	0
+ 974 033b 0F       		.uleb128 0xf
+ 975 033c 6A000000 		.4byte	.LVL15
+ 976 0340 F5060000 		.4byte	0x6f5
+ 977 0344 5B030000 		.4byte	0x35b
+ 978 0348 10       		.uleb128 0x10
+ 979 0349 01       		.uleb128 0x1
+ 980 034a 50       		.byte	0x50
+ 981 034b 01       		.uleb128 0x1
+ 982 034c 48       		.byte	0x48
+ 983 034d 10       		.uleb128 0x10
+ 984 034e 01       		.uleb128 0x1
+ 985 034f 51       		.byte	0x51
+ 986 0350 02       		.uleb128 0x2
+ 987 0351 08       		.byte	0x8
+ 988 0352 27       		.byte	0x27
+ 989 0353 10       		.uleb128 0x10
+ 990 0354 01       		.uleb128 0x1
+ 991 0355 52       		.byte	0x52
+ 992 0356 03       		.uleb128 0x3
+ 993 0357 91       		.byte	0x91
+ 994 0358 BA7F     		.sleb128 -70
+ 995 035a 00       		.byte	0
+ 996 035b 0F       		.uleb128 0xf
+ 997 035c 78000000 		.4byte	.LVL17
+ 998 0360 BE060000 		.4byte	0x6be
+ 999 0364 79030000 		.4byte	0x379
+ 1000 0368 10       		.uleb128 0x10
+ 1001 0369 01       		.uleb128 0x1
+ 1002 036a 50       		.byte	0x50
+ 1003 036b 03       		.uleb128 0x3
+ 1004 036c 91       		.byte	0x91
+ 1005 036d BC7F     		.sleb128 -68
+ 1006 036f 10       		.uleb128 0x10
+ 1007 0370 01       		.uleb128 0x1
+ 1008 0371 51       		.byte	0x51
+ 1009 0372 05       		.uleb128 0x5
+ 1010 0373 03       		.byte	0x3
+ 1011 0374 6C000000 		.4byte	.LC3
+ 1012 0378 00       		.byte	0
+ 1013 0379 0F       		.uleb128 0xf
+ 1014 037a 7E000000 		.4byte	.LVL18
+ 1015 037e C9060000 		.4byte	0x6c9
+ 1016 0382 8E030000 		.4byte	0x38e
+ 1017 0386 10       		.uleb128 0x10
+ 1018 0387 01       		.uleb128 0x1
+ 1019 0388 50       		.byte	0x50
+ 1020 0389 03       		.uleb128 0x3
+ 1021 038a 91       		.byte	0x91
+ 1022 038b BC7F     		.sleb128 -68
+ 1023 038d 00       		.byte	0
+ 1024 038e 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 25
+
+
+ 1025 038f 86000000 		.4byte	.LVL21
+ 1026 0393 C9060000 		.4byte	0x6c9
+ 1027 0397 A5030000 		.4byte	0x3a5
+ 1028 039b 10       		.uleb128 0x10
+ 1029 039c 01       		.uleb128 0x1
+ 1030 039d 50       		.byte	0x50
+ 1031 039e 05       		.uleb128 0x5
+ 1032 039f 03       		.byte	0x3
+ 1033 03a0 88000000 		.4byte	.LC4
+ 1034 03a4 00       		.byte	0
+ 1035 03a5 0F       		.uleb128 0xf
+ 1036 03a6 92000000 		.4byte	.LVL22
+ 1037 03aa F5060000 		.4byte	0x6f5
+ 1038 03ae C5030000 		.4byte	0x3c5
+ 1039 03b2 10       		.uleb128 0x10
+ 1040 03b3 01       		.uleb128 0x1
+ 1041 03b4 50       		.byte	0x50
+ 1042 03b5 01       		.uleb128 0x1
+ 1043 03b6 48       		.byte	0x48
+ 1044 03b7 10       		.uleb128 0x10
+ 1045 03b8 01       		.uleb128 0x1
+ 1046 03b9 51       		.byte	0x51
+ 1047 03ba 02       		.uleb128 0x2
+ 1048 03bb 08       		.byte	0x8
+ 1049 03bc 20       		.byte	0x20
+ 1050 03bd 10       		.uleb128 0x10
+ 1051 03be 01       		.uleb128 0x1
+ 1052 03bf 52       		.byte	0x52
+ 1053 03c0 03       		.uleb128 0x3
+ 1054 03c1 91       		.byte	0x91
+ 1055 03c2 B97F     		.sleb128 -71
+ 1056 03c4 00       		.byte	0
+ 1057 03c5 0F       		.uleb128 0xf
+ 1058 03c6 A0000000 		.4byte	.LVL24
+ 1059 03ca BE060000 		.4byte	0x6be
+ 1060 03ce E3030000 		.4byte	0x3e3
+ 1061 03d2 10       		.uleb128 0x10
+ 1062 03d3 01       		.uleb128 0x1
+ 1063 03d4 50       		.byte	0x50
+ 1064 03d5 03       		.uleb128 0x3
+ 1065 03d6 91       		.byte	0x91
+ 1066 03d7 BC7F     		.sleb128 -68
+ 1067 03d9 10       		.uleb128 0x10
+ 1068 03da 01       		.uleb128 0x1
+ 1069 03db 51       		.byte	0x51
+ 1070 03dc 05       		.uleb128 0x5
+ 1071 03dd 03       		.byte	0x3
+ 1072 03de C4000000 		.4byte	.LC5
+ 1073 03e2 00       		.byte	0
+ 1074 03e3 0F       		.uleb128 0xf
+ 1075 03e4 A6000000 		.4byte	.LVL25
+ 1076 03e8 C9060000 		.4byte	0x6c9
+ 1077 03ec F8030000 		.4byte	0x3f8
+ 1078 03f0 10       		.uleb128 0x10
+ 1079 03f1 01       		.uleb128 0x1
+ 1080 03f2 50       		.byte	0x50
+ 1081 03f3 03       		.uleb128 0x3
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 26
+
+
+ 1082 03f4 91       		.byte	0x91
+ 1083 03f5 BC7F     		.sleb128 -68
+ 1084 03f7 00       		.byte	0
+ 1085 03f8 0F       		.uleb128 0xf
+ 1086 03f9 AE000000 		.4byte	.LVL28
+ 1087 03fd C9060000 		.4byte	0x6c9
+ 1088 0401 0F040000 		.4byte	0x40f
+ 1089 0405 10       		.uleb128 0x10
+ 1090 0406 01       		.uleb128 0x1
+ 1091 0407 50       		.byte	0x50
+ 1092 0408 05       		.uleb128 0x5
+ 1093 0409 03       		.byte	0x3
+ 1094 040a E4000000 		.4byte	.LC6
+ 1095 040e 00       		.byte	0
+ 1096 040f 0F       		.uleb128 0xf
+ 1097 0410 B4000000 		.4byte	.LVL29
+ 1098 0414 C9060000 		.4byte	0x6c9
+ 1099 0418 26040000 		.4byte	0x426
+ 1100 041c 10       		.uleb128 0x10
+ 1101 041d 01       		.uleb128 0x1
+ 1102 041e 50       		.byte	0x50
+ 1103 041f 05       		.uleb128 0x5
+ 1104 0420 03       		.byte	0x3
+ 1105 0421 20010000 		.4byte	.LC7
+ 1106 0425 00       		.byte	0
+ 1107 0426 0F       		.uleb128 0xf
+ 1108 0427 CA000000 		.4byte	.LVL30
+ 1109 042b 00070000 		.4byte	0x700
+ 1110 042f 45040000 		.4byte	0x445
+ 1111 0433 10       		.uleb128 0x10
+ 1112 0434 01       		.uleb128 0x1
+ 1113 0435 50       		.byte	0x50
+ 1114 0436 01       		.uleb128 0x1
+ 1115 0437 48       		.byte	0x48
+ 1116 0438 10       		.uleb128 0x10
+ 1117 0439 01       		.uleb128 0x1
+ 1118 043a 51       		.byte	0x51
+ 1119 043b 02       		.uleb128 0x2
+ 1120 043c 08       		.byte	0x8
+ 1121 043d 20       		.byte	0x20
+ 1122 043e 10       		.uleb128 0x10
+ 1123 043f 01       		.uleb128 0x1
+ 1124 0440 52       		.byte	0x52
+ 1125 0441 02       		.uleb128 0x2
+ 1126 0442 08       		.byte	0x8
+ 1127 0443 57       		.byte	0x57
+ 1128 0444 00       		.byte	0
+ 1129 0445 0F       		.uleb128 0xf
+ 1130 0446 D8000000 		.4byte	.LVL32
+ 1131 044a BE060000 		.4byte	0x6be
+ 1132 044e 63040000 		.4byte	0x463
+ 1133 0452 10       		.uleb128 0x10
+ 1134 0453 01       		.uleb128 0x1
+ 1135 0454 50       		.byte	0x50
+ 1136 0455 03       		.uleb128 0x3
+ 1137 0456 91       		.byte	0x91
+ 1138 0457 BC7F     		.sleb128 -68
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 27
+
+
+ 1139 0459 10       		.uleb128 0x10
+ 1140 045a 01       		.uleb128 0x1
+ 1141 045b 51       		.byte	0x51
+ 1142 045c 05       		.uleb128 0x5
+ 1143 045d 03       		.byte	0x3
+ 1144 045e 3C010000 		.4byte	.LC8
+ 1145 0462 00       		.byte	0
+ 1146 0463 0F       		.uleb128 0xf
+ 1147 0464 DE000000 		.4byte	.LVL33
+ 1148 0468 C9060000 		.4byte	0x6c9
+ 1149 046c 78040000 		.4byte	0x478
+ 1150 0470 10       		.uleb128 0x10
+ 1151 0471 01       		.uleb128 0x1
+ 1152 0472 50       		.byte	0x50
+ 1153 0473 03       		.uleb128 0x3
+ 1154 0474 91       		.byte	0x91
+ 1155 0475 BC7F     		.sleb128 -68
+ 1156 0477 00       		.byte	0
+ 1157 0478 0F       		.uleb128 0xf
+ 1158 0479 E6000000 		.4byte	.LVL36
+ 1159 047d C9060000 		.4byte	0x6c9
+ 1160 0481 8F040000 		.4byte	0x48f
+ 1161 0485 10       		.uleb128 0x10
+ 1162 0486 01       		.uleb128 0x1
+ 1163 0487 50       		.byte	0x50
+ 1164 0488 05       		.uleb128 0x5
+ 1165 0489 03       		.byte	0x3
+ 1166 048a 74010000 		.4byte	.LC9
+ 1167 048e 00       		.byte	0
+ 1168 048f 0F       		.uleb128 0xf
+ 1169 0490 F2000000 		.4byte	.LVL37
+ 1170 0494 F5060000 		.4byte	0x6f5
+ 1171 0498 AF040000 		.4byte	0x4af
+ 1172 049c 10       		.uleb128 0x10
+ 1173 049d 01       		.uleb128 0x1
+ 1174 049e 50       		.byte	0x50
+ 1175 049f 01       		.uleb128 0x1
+ 1176 04a0 48       		.byte	0x48
+ 1177 04a1 10       		.uleb128 0x10
+ 1178 04a2 01       		.uleb128 0x1
+ 1179 04a3 51       		.byte	0x51
+ 1180 04a4 02       		.uleb128 0x2
+ 1181 04a5 08       		.byte	0x8
+ 1182 04a6 20       		.byte	0x20
+ 1183 04a7 10       		.uleb128 0x10
+ 1184 04a8 01       		.uleb128 0x1
+ 1185 04a9 52       		.byte	0x52
+ 1186 04aa 03       		.uleb128 0x3
+ 1187 04ab 91       		.byte	0x91
+ 1188 04ac B97F     		.sleb128 -71
+ 1189 04ae 00       		.byte	0
+ 1190 04af 0F       		.uleb128 0xf
+ 1191 04b0 00010000 		.4byte	.LVL39
+ 1192 04b4 BE060000 		.4byte	0x6be
+ 1193 04b8 CD040000 		.4byte	0x4cd
+ 1194 04bc 10       		.uleb128 0x10
+ 1195 04bd 01       		.uleb128 0x1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 28
+
+
+ 1196 04be 50       		.byte	0x50
+ 1197 04bf 03       		.uleb128 0x3
+ 1198 04c0 91       		.byte	0x91
+ 1199 04c1 BC7F     		.sleb128 -68
+ 1200 04c3 10       		.uleb128 0x10
+ 1201 04c4 01       		.uleb128 0x1
+ 1202 04c5 51       		.byte	0x51
+ 1203 04c6 05       		.uleb128 0x5
+ 1204 04c7 03       		.byte	0x3
+ 1205 04c8 B0010000 		.4byte	.LC10
+ 1206 04cc 00       		.byte	0
+ 1207 04cd 0F       		.uleb128 0xf
+ 1208 04ce 06010000 		.4byte	.LVL40
+ 1209 04d2 C9060000 		.4byte	0x6c9
+ 1210 04d6 E2040000 		.4byte	0x4e2
+ 1211 04da 10       		.uleb128 0x10
+ 1212 04db 01       		.uleb128 0x1
+ 1213 04dc 50       		.byte	0x50
+ 1214 04dd 03       		.uleb128 0x3
+ 1215 04de 91       		.byte	0x91
+ 1216 04df BC7F     		.sleb128 -68
+ 1217 04e1 00       		.byte	0
+ 1218 04e2 0F       		.uleb128 0xf
+ 1219 04e3 0E010000 		.4byte	.LVL43
+ 1220 04e7 C9060000 		.4byte	0x6c9
+ 1221 04eb F9040000 		.4byte	0x4f9
+ 1222 04ef 10       		.uleb128 0x10
+ 1223 04f0 01       		.uleb128 0x1
+ 1224 04f1 50       		.byte	0x50
+ 1225 04f2 05       		.uleb128 0x5
+ 1226 04f3 03       		.byte	0x3
+ 1227 04f4 E4000000 		.4byte	.LC6
+ 1228 04f8 00       		.byte	0
+ 1229 04f9 0F       		.uleb128 0xf
+ 1230 04fa 18010000 		.4byte	.LVL44
+ 1231 04fe F5060000 		.4byte	0x6f5
+ 1232 0502 19050000 		.4byte	0x519
+ 1233 0506 10       		.uleb128 0x10
+ 1234 0507 01       		.uleb128 0x1
+ 1235 0508 50       		.byte	0x50
+ 1236 0509 01       		.uleb128 0x1
+ 1237 050a 48       		.byte	0x48
+ 1238 050b 10       		.uleb128 0x10
+ 1239 050c 01       		.uleb128 0x1
+ 1240 050d 51       		.byte	0x51
+ 1241 050e 02       		.uleb128 0x2
+ 1242 050f 08       		.byte	0x8
+ 1243 0510 23       		.byte	0x23
+ 1244 0511 10       		.uleb128 0x10
+ 1245 0512 01       		.uleb128 0x1
+ 1246 0513 52       		.byte	0x52
+ 1247 0514 03       		.uleb128 0x3
+ 1248 0515 91       		.byte	0x91
+ 1249 0516 B87F     		.sleb128 -72
+ 1250 0518 00       		.byte	0
+ 1251 0519 0F       		.uleb128 0xf
+ 1252 051a 26010000 		.4byte	.LVL46
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 29
+
+
+ 1253 051e BE060000 		.4byte	0x6be
+ 1254 0522 37050000 		.4byte	0x537
+ 1255 0526 10       		.uleb128 0x10
+ 1256 0527 01       		.uleb128 0x1
+ 1257 0528 50       		.byte	0x50
+ 1258 0529 03       		.uleb128 0x3
+ 1259 052a 91       		.byte	0x91
+ 1260 052b BC7F     		.sleb128 -68
+ 1261 052d 10       		.uleb128 0x10
+ 1262 052e 01       		.uleb128 0x1
+ 1263 052f 51       		.byte	0x51
+ 1264 0530 05       		.uleb128 0x5
+ 1265 0531 03       		.byte	0x3
+ 1266 0532 E8010000 		.4byte	.LC11
+ 1267 0536 00       		.byte	0
+ 1268 0537 0F       		.uleb128 0xf
+ 1269 0538 2C010000 		.4byte	.LVL47
+ 1270 053c C9060000 		.4byte	0x6c9
+ 1271 0540 4C050000 		.4byte	0x54c
+ 1272 0544 10       		.uleb128 0x10
+ 1273 0545 01       		.uleb128 0x1
+ 1274 0546 50       		.byte	0x50
+ 1275 0547 03       		.uleb128 0x3
+ 1276 0548 91       		.byte	0x91
+ 1277 0549 BC7F     		.sleb128 -68
+ 1278 054b 00       		.byte	0
+ 1279 054c 0F       		.uleb128 0xf
+ 1280 054d 34010000 		.4byte	.LVL50
+ 1281 0551 C9060000 		.4byte	0x6c9
+ 1282 0555 63050000 		.4byte	0x563
+ 1283 0559 10       		.uleb128 0x10
+ 1284 055a 01       		.uleb128 0x1
+ 1285 055b 50       		.byte	0x50
+ 1286 055c 05       		.uleb128 0x5
+ 1287 055d 03       		.byte	0x3
+ 1288 055e 08020000 		.4byte	.LC12
+ 1289 0562 00       		.byte	0
+ 1290 0563 0F       		.uleb128 0xf
+ 1291 0564 44010000 		.4byte	.LVL52
+ 1292 0568 00070000 		.4byte	0x700
+ 1293 056c 82050000 		.4byte	0x582
+ 1294 0570 10       		.uleb128 0x10
+ 1295 0571 01       		.uleb128 0x1
+ 1296 0572 50       		.byte	0x50
+ 1297 0573 01       		.uleb128 0x1
+ 1298 0574 48       		.byte	0x48
+ 1299 0575 10       		.uleb128 0x10
+ 1300 0576 01       		.uleb128 0x1
+ 1301 0577 51       		.byte	0x51
+ 1302 0578 02       		.uleb128 0x2
+ 1303 0579 08       		.byte	0x8
+ 1304 057a 23       		.byte	0x23
+ 1305 057b 10       		.uleb128 0x10
+ 1306 057c 01       		.uleb128 0x1
+ 1307 057d 52       		.byte	0x52
+ 1308 057e 02       		.uleb128 0x2
+ 1309 057f 09       		.byte	0x9
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 30
+
+
+ 1310 0580 88       		.byte	0x88
+ 1311 0581 00       		.byte	0
+ 1312 0582 0F       		.uleb128 0xf
+ 1313 0583 4E010000 		.4byte	.LVL53
+ 1314 0587 F5060000 		.4byte	0x6f5
+ 1315 058b A1050000 		.4byte	0x5a1
+ 1316 058f 10       		.uleb128 0x10
+ 1317 0590 01       		.uleb128 0x1
+ 1318 0591 50       		.byte	0x50
+ 1319 0592 01       		.uleb128 0x1
+ 1320 0593 48       		.byte	0x48
+ 1321 0594 10       		.uleb128 0x10
+ 1322 0595 01       		.uleb128 0x1
+ 1323 0596 51       		.byte	0x51
+ 1324 0597 02       		.uleb128 0x2
+ 1325 0598 08       		.byte	0x8
+ 1326 0599 23       		.byte	0x23
+ 1327 059a 10       		.uleb128 0x10
+ 1328 059b 01       		.uleb128 0x1
+ 1329 059c 52       		.byte	0x52
+ 1330 059d 02       		.uleb128 0x2
+ 1331 059e 74       		.byte	0x74
+ 1332 059f 00       		.sleb128 0
+ 1333 05a0 00       		.byte	0
+ 1334 05a1 0F       		.uleb128 0xf
+ 1335 05a2 5C010000 		.4byte	.LVL55
+ 1336 05a6 BE060000 		.4byte	0x6be
+ 1337 05aa BF050000 		.4byte	0x5bf
+ 1338 05ae 10       		.uleb128 0x10
+ 1339 05af 01       		.uleb128 0x1
+ 1340 05b0 50       		.byte	0x50
+ 1341 05b1 03       		.uleb128 0x3
+ 1342 05b2 91       		.byte	0x91
+ 1343 05b3 BC7F     		.sleb128 -68
+ 1344 05b5 10       		.uleb128 0x10
+ 1345 05b6 01       		.uleb128 0x1
+ 1346 05b7 51       		.byte	0x51
+ 1347 05b8 05       		.uleb128 0x5
+ 1348 05b9 03       		.byte	0x3
+ 1349 05ba 44020000 		.4byte	.LC13
+ 1350 05be 00       		.byte	0
+ 1351 05bf 0F       		.uleb128 0xf
+ 1352 05c0 62010000 		.4byte	.LVL56
+ 1353 05c4 C9060000 		.4byte	0x6c9
+ 1354 05c8 D4050000 		.4byte	0x5d4
+ 1355 05cc 10       		.uleb128 0x10
+ 1356 05cd 01       		.uleb128 0x1
+ 1357 05ce 50       		.byte	0x50
+ 1358 05cf 03       		.uleb128 0x3
+ 1359 05d0 91       		.byte	0x91
+ 1360 05d1 BC7F     		.sleb128 -68
+ 1361 05d3 00       		.byte	0
+ 1362 05d4 0F       		.uleb128 0xf
+ 1363 05d5 6A010000 		.4byte	.LVL59
+ 1364 05d9 C9060000 		.4byte	0x6c9
+ 1365 05dd EB050000 		.4byte	0x5eb
+ 1366 05e1 10       		.uleb128 0x10
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 31
+
+
+ 1367 05e2 01       		.uleb128 0x1
+ 1368 05e3 50       		.byte	0x50
+ 1369 05e4 05       		.uleb128 0x5
+ 1370 05e5 03       		.byte	0x3
+ 1371 05e6 08020000 		.4byte	.LC12
+ 1372 05ea 00       		.byte	0
+ 1373 05eb 0F       		.uleb128 0xf
+ 1374 05ec 82010000 		.4byte	.LVL60
+ 1375 05f0 F5060000 		.4byte	0x6f5
+ 1376 05f4 0B060000 		.4byte	0x60b
+ 1377 05f8 10       		.uleb128 0x10
+ 1378 05f9 01       		.uleb128 0x1
+ 1379 05fa 50       		.byte	0x50
+ 1380 05fb 01       		.uleb128 0x1
+ 1381 05fc 48       		.byte	0x48
+ 1382 05fd 10       		.uleb128 0x10
+ 1383 05fe 01       		.uleb128 0x1
+ 1384 05ff 51       		.byte	0x51
+ 1385 0600 02       		.uleb128 0x2
+ 1386 0601 08       		.byte	0x8
+ 1387 0602 27       		.byte	0x27
+ 1388 0603 10       		.uleb128 0x10
+ 1389 0604 01       		.uleb128 0x1
+ 1390 0605 52       		.byte	0x52
+ 1391 0606 03       		.uleb128 0x3
+ 1392 0607 91       		.byte	0x91
+ 1393 0608 BA7F     		.sleb128 -70
+ 1394 060a 00       		.byte	0
+ 1395 060b 0F       		.uleb128 0xf
+ 1396 060c 98010000 		.4byte	.LVL61
+ 1397 0610 0B070000 		.4byte	0x70b
+ 1398 0614 30060000 		.4byte	0x630
+ 1399 0618 10       		.uleb128 0x10
+ 1400 0619 01       		.uleb128 0x1
+ 1401 061a 50       		.byte	0x50
+ 1402 061b 01       		.uleb128 0x1
+ 1403 061c 48       		.byte	0x48
+ 1404 061d 10       		.uleb128 0x10
+ 1405 061e 01       		.uleb128 0x1
+ 1406 061f 51       		.byte	0x51
+ 1407 0620 02       		.uleb128 0x2
+ 1408 0621 08       		.byte	0x8
+ 1409 0622 28       		.byte	0x28
+ 1410 0623 10       		.uleb128 0x10
+ 1411 0624 01       		.uleb128 0x1
+ 1412 0625 52       		.byte	0x52
+ 1413 0626 01       		.uleb128 0x1
+ 1414 0627 35       		.byte	0x35
+ 1415 0628 10       		.uleb128 0x10
+ 1416 0629 01       		.uleb128 0x1
+ 1417 062a 53       		.byte	0x53
+ 1418 062b 03       		.uleb128 0x3
+ 1419 062c 91       		.byte	0x91
+ 1420 062d B07F     		.sleb128 -80
+ 1421 062f 00       		.byte	0
+ 1422 0630 12       		.uleb128 0x12
+ 1423 0631 D4010000 		.4byte	.LVL71
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 32
+
+
+ 1424 0635 16070000 		.4byte	0x716
+ 1425 0639 12       		.uleb128 0x12
+ 1426 063a 0E020000 		.4byte	.LVL82
+ 1427 063e 16070000 		.4byte	0x716
+ 1428 0642 12       		.uleb128 0x12
+ 1429 0643 48020000 		.4byte	.LVL93
+ 1430 0647 16070000 		.4byte	0x716
+ 1431 064b 11       		.uleb128 0x11
+ 1432 064c B6020000 		.4byte	.LVL95
+ 1433 0650 22070000 		.4byte	0x722
+ 1434 0654 10       		.uleb128 0x10
+ 1435 0655 01       		.uleb128 0x1
+ 1436 0656 50       		.byte	0x50
+ 1437 0657 03       		.uleb128 0x3
+ 1438 0658 91       		.byte	0x91
+ 1439 0659 A07F     		.sleb128 -96
+ 1440 065b 10       		.uleb128 0x10
+ 1441 065c 01       		.uleb128 0x1
+ 1442 065d 51       		.byte	0x51
+ 1443 065e 01       		.uleb128 0x1
+ 1444 065f 3E       		.byte	0x3e
+ 1445 0660 00       		.byte	0
+ 1446 0661 00       		.byte	0
+ 1447 0662 13       		.uleb128 0x13
+ 1448 0663 D3000000 		.4byte	0xd3
+ 1449 0667 72060000 		.4byte	0x672
+ 1450 066b 14       		.uleb128 0x14
+ 1451 066c 05010000 		.4byte	0x105
+ 1452 0670 31       		.byte	0x31
+ 1453 0671 00       		.byte	0
+ 1454 0672 13       		.uleb128 0x13
+ 1455 0673 8C000000 		.4byte	0x8c
+ 1456 0677 82060000 		.4byte	0x682
+ 1457 067b 14       		.uleb128 0x14
+ 1458 067c 05010000 		.4byte	0x105
+ 1459 0680 05       		.byte	0x5
+ 1460 0681 00       		.byte	0
+ 1461 0682 13       		.uleb128 0x13
+ 1462 0683 8C000000 		.4byte	0x8c
+ 1463 0687 92060000 		.4byte	0x692
+ 1464 068b 14       		.uleb128 0x14
+ 1465 068c 05010000 		.4byte	0x105
+ 1466 0690 0D       		.byte	0xd
+ 1467 0691 00       		.byte	0
+ 1468 0692 13       		.uleb128 0x13
+ 1469 0693 8C000000 		.4byte	0x8c
+ 1470 0697 A2060000 		.4byte	0x6a2
+ 1471 069b 14       		.uleb128 0x14
+ 1472 069c 05010000 		.4byte	0x105
+ 1473 06a0 03       		.byte	0x3
+ 1474 06a1 00       		.byte	0
+ 1475 06a2 15       		.uleb128 0x15
+ 1476 06a3 E7020000 		.4byte	.LASF60
+ 1477 06a7 0B       		.byte	0xb
+ 1478 06a8 1207     		.2byte	0x712
+ 1479 06aa AE060000 		.4byte	0x6ae
+ 1480 06ae 16       		.uleb128 0x16
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 33
+
+
+ 1481 06af A2000000 		.4byte	0xa2
+ 1482 06b3 17       		.uleb128 0x17
+ 1483 06b4 2E000000 		.4byte	.LASF45
+ 1484 06b8 2E000000 		.4byte	.LASF45
+ 1485 06bc 06       		.byte	0x6
+ 1486 06bd 5D       		.byte	0x5d
+ 1487 06be 17       		.uleb128 0x17
+ 1488 06bf BB030000 		.4byte	.LASF46
+ 1489 06c3 BB030000 		.4byte	.LASF46
+ 1490 06c7 07       		.byte	0x7
+ 1491 06c8 E7       		.byte	0xe7
+ 1492 06c9 17       		.uleb128 0x17
+ 1493 06ca 19000000 		.4byte	.LASF47
+ 1494 06ce 19000000 		.4byte	.LASF47
+ 1495 06d2 08       		.byte	0x8
+ 1496 06d3 8B       		.byte	0x8b
+ 1497 06d4 17       		.uleb128 0x17
+ 1498 06d5 CB030000 		.4byte	.LASF48
+ 1499 06d9 CB030000 		.4byte	.LASF48
+ 1500 06dd 06       		.byte	0x6
+ 1501 06de 17       		.byte	0x17
+ 1502 06df 17       		.uleb128 0x17
+ 1503 06e0 20030000 		.4byte	.LASF49
+ 1504 06e4 20030000 		.4byte	.LASF49
+ 1505 06e8 08       		.byte	0x8
+ 1506 06e9 54       		.byte	0x54
+ 1507 06ea 17       		.uleb128 0x17
+ 1508 06eb C3030000 		.4byte	.LASF50
+ 1509 06ef C3030000 		.4byte	.LASF50
+ 1510 06f3 09       		.byte	0x9
+ 1511 06f4 76       		.byte	0x76
+ 1512 06f5 17       		.uleb128 0x17
+ 1513 06f6 47030000 		.4byte	.LASF51
+ 1514 06fa 47030000 		.4byte	.LASF51
+ 1515 06fe 06       		.byte	0x6
+ 1516 06ff 28       		.byte	0x28
+ 1517 0700 17       		.uleb128 0x17
+ 1518 0701 5C020000 		.4byte	.LASF52
+ 1519 0705 5C020000 		.4byte	.LASF52
+ 1520 0709 06       		.byte	0x6
+ 1521 070a 43       		.byte	0x43
+ 1522 070b 17       		.uleb128 0x17
+ 1523 070c 3B020000 		.4byte	.LASF53
+ 1524 0710 3B020000 		.4byte	.LASF53
+ 1525 0714 06       		.byte	0x6
+ 1526 0715 36       		.byte	0x36
+ 1527 0716 18       		.uleb128 0x18
+ 1528 0717 B3000000 		.4byte	.LASF54
+ 1529 071b B3000000 		.4byte	.LASF54
+ 1530 071f 0A       		.byte	0xa
+ 1531 0720 9101     		.2byte	0x191
+ 1532 0722 17       		.uleb128 0x17
+ 1533 0723 78000000 		.4byte	.LASF55
+ 1534 0727 78000000 		.4byte	.LASF55
+ 1535 072b 08       		.byte	0x8
+ 1536 072c 8C       		.byte	0x8c
+ 1537 072d 00       		.byte	0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 34
+
+
+ 1538              		.section	.debug_abbrev,"",%progbits
+ 1539              	.Ldebug_abbrev0:
+ 1540 0000 01       		.uleb128 0x1
+ 1541 0001 11       		.uleb128 0x11
+ 1542 0002 01       		.byte	0x1
+ 1543 0003 25       		.uleb128 0x25
+ 1544 0004 0E       		.uleb128 0xe
+ 1545 0005 13       		.uleb128 0x13
+ 1546 0006 0B       		.uleb128 0xb
+ 1547 0007 03       		.uleb128 0x3
+ 1548 0008 0E       		.uleb128 0xe
+ 1549 0009 1B       		.uleb128 0x1b
+ 1550 000a 0E       		.uleb128 0xe
+ 1551 000b 55       		.uleb128 0x55
+ 1552 000c 17       		.uleb128 0x17
+ 1553 000d 11       		.uleb128 0x11
+ 1554 000e 01       		.uleb128 0x1
+ 1555 000f 10       		.uleb128 0x10
+ 1556 0010 17       		.uleb128 0x17
+ 1557 0011 00       		.byte	0
+ 1558 0012 00       		.byte	0
+ 1559 0013 02       		.uleb128 0x2
+ 1560 0014 24       		.uleb128 0x24
+ 1561 0015 00       		.byte	0
+ 1562 0016 0B       		.uleb128 0xb
+ 1563 0017 0B       		.uleb128 0xb
+ 1564 0018 3E       		.uleb128 0x3e
+ 1565 0019 0B       		.uleb128 0xb
+ 1566 001a 03       		.uleb128 0x3
+ 1567 001b 0E       		.uleb128 0xe
+ 1568 001c 00       		.byte	0
+ 1569 001d 00       		.byte	0
+ 1570 001e 03       		.uleb128 0x3
+ 1571 001f 16       		.uleb128 0x16
+ 1572 0020 00       		.byte	0
+ 1573 0021 03       		.uleb128 0x3
+ 1574 0022 0E       		.uleb128 0xe
+ 1575 0023 3A       		.uleb128 0x3a
+ 1576 0024 0B       		.uleb128 0xb
+ 1577 0025 3B       		.uleb128 0x3b
+ 1578 0026 0B       		.uleb128 0xb
+ 1579 0027 49       		.uleb128 0x49
+ 1580 0028 13       		.uleb128 0x13
+ 1581 0029 00       		.byte	0
+ 1582 002a 00       		.byte	0
+ 1583 002b 04       		.uleb128 0x4
+ 1584 002c 24       		.uleb128 0x24
+ 1585 002d 00       		.byte	0
+ 1586 002e 0B       		.uleb128 0xb
+ 1587 002f 0B       		.uleb128 0xb
+ 1588 0030 3E       		.uleb128 0x3e
+ 1589 0031 0B       		.uleb128 0xb
+ 1590 0032 03       		.uleb128 0x3
+ 1591 0033 08       		.uleb128 0x8
+ 1592 0034 00       		.byte	0
+ 1593 0035 00       		.byte	0
+ 1594 0036 05       		.uleb128 0x5
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 35
+
+
+ 1595 0037 16       		.uleb128 0x16
+ 1596 0038 00       		.byte	0
+ 1597 0039 03       		.uleb128 0x3
+ 1598 003a 0E       		.uleb128 0xe
+ 1599 003b 3A       		.uleb128 0x3a
+ 1600 003c 0B       		.uleb128 0xb
+ 1601 003d 3B       		.uleb128 0x3b
+ 1602 003e 05       		.uleb128 0x5
+ 1603 003f 49       		.uleb128 0x49
+ 1604 0040 13       		.uleb128 0x13
+ 1605 0041 00       		.byte	0
+ 1606 0042 00       		.byte	0
+ 1607 0043 06       		.uleb128 0x6
+ 1608 0044 04       		.uleb128 0x4
+ 1609 0045 01       		.byte	0x1
+ 1610 0046 0B       		.uleb128 0xb
+ 1611 0047 0B       		.uleb128 0xb
+ 1612 0048 49       		.uleb128 0x49
+ 1613 0049 13       		.uleb128 0x13
+ 1614 004a 3A       		.uleb128 0x3a
+ 1615 004b 0B       		.uleb128 0xb
+ 1616 004c 3B       		.uleb128 0x3b
+ 1617 004d 0B       		.uleb128 0xb
+ 1618 004e 01       		.uleb128 0x1
+ 1619 004f 13       		.uleb128 0x13
+ 1620 0050 00       		.byte	0
+ 1621 0051 00       		.byte	0
+ 1622 0052 07       		.uleb128 0x7
+ 1623 0053 28       		.uleb128 0x28
+ 1624 0054 00       		.byte	0
+ 1625 0055 03       		.uleb128 0x3
+ 1626 0056 0E       		.uleb128 0xe
+ 1627 0057 1C       		.uleb128 0x1c
+ 1628 0058 0B       		.uleb128 0xb
+ 1629 0059 00       		.byte	0
+ 1630 005a 00       		.byte	0
+ 1631 005b 08       		.uleb128 0x8
+ 1632 005c 2E       		.uleb128 0x2e
+ 1633 005d 01       		.byte	0x1
+ 1634 005e 3F       		.uleb128 0x3f
+ 1635 005f 19       		.uleb128 0x19
+ 1636 0060 03       		.uleb128 0x3
+ 1637 0061 0E       		.uleb128 0xe
+ 1638 0062 3A       		.uleb128 0x3a
+ 1639 0063 0B       		.uleb128 0xb
+ 1640 0064 3B       		.uleb128 0x3b
+ 1641 0065 0B       		.uleb128 0xb
+ 1642 0066 27       		.uleb128 0x27
+ 1643 0067 19       		.uleb128 0x19
+ 1644 0068 49       		.uleb128 0x49
+ 1645 0069 13       		.uleb128 0x13
+ 1646 006a 8701     		.uleb128 0x87
+ 1647 006c 19       		.uleb128 0x19
+ 1648 006d 11       		.uleb128 0x11
+ 1649 006e 01       		.uleb128 0x1
+ 1650 006f 12       		.uleb128 0x12
+ 1651 0070 06       		.uleb128 0x6
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 36
+
+
+ 1652 0071 40       		.uleb128 0x40
+ 1653 0072 18       		.uleb128 0x18
+ 1654 0073 9642     		.uleb128 0x2116
+ 1655 0075 19       		.uleb128 0x19
+ 1656 0076 01       		.uleb128 0x1
+ 1657 0077 13       		.uleb128 0x13
+ 1658 0078 00       		.byte	0
+ 1659 0079 00       		.byte	0
+ 1660 007a 09       		.uleb128 0x9
+ 1661 007b 34       		.uleb128 0x34
+ 1662 007c 00       		.byte	0
+ 1663 007d 03       		.uleb128 0x3
+ 1664 007e 0E       		.uleb128 0xe
+ 1665 007f 3A       		.uleb128 0x3a
+ 1666 0080 0B       		.uleb128 0xb
+ 1667 0081 3B       		.uleb128 0x3b
+ 1668 0082 0B       		.uleb128 0xb
+ 1669 0083 49       		.uleb128 0x49
+ 1670 0084 13       		.uleb128 0x13
+ 1671 0085 02       		.uleb128 0x2
+ 1672 0086 18       		.uleb128 0x18
+ 1673 0087 00       		.byte	0
+ 1674 0088 00       		.byte	0
+ 1675 0089 0A       		.uleb128 0xa
+ 1676 008a 34       		.uleb128 0x34
+ 1677 008b 00       		.byte	0
+ 1678 008c 03       		.uleb128 0x3
+ 1679 008d 0E       		.uleb128 0xe
+ 1680 008e 3A       		.uleb128 0x3a
+ 1681 008f 0B       		.uleb128 0xb
+ 1682 0090 3B       		.uleb128 0x3b
+ 1683 0091 0B       		.uleb128 0xb
+ 1684 0092 49       		.uleb128 0x49
+ 1685 0093 13       		.uleb128 0x13
+ 1686 0094 02       		.uleb128 0x2
+ 1687 0095 17       		.uleb128 0x17
+ 1688 0096 00       		.byte	0
+ 1689 0097 00       		.byte	0
+ 1690 0098 0B       		.uleb128 0xb
+ 1691 0099 34       		.uleb128 0x34
+ 1692 009a 00       		.byte	0
+ 1693 009b 03       		.uleb128 0x3
+ 1694 009c 0E       		.uleb128 0xe
+ 1695 009d 3A       		.uleb128 0x3a
+ 1696 009e 0B       		.uleb128 0xb
+ 1697 009f 3B       		.uleb128 0x3b
+ 1698 00a0 0B       		.uleb128 0xb
+ 1699 00a1 49       		.uleb128 0x49
+ 1700 00a2 13       		.uleb128 0x13
+ 1701 00a3 1C       		.uleb128 0x1c
+ 1702 00a4 0D       		.uleb128 0xd
+ 1703 00a5 00       		.byte	0
+ 1704 00a6 00       		.byte	0
+ 1705 00a7 0C       		.uleb128 0xc
+ 1706 00a8 34       		.uleb128 0x34
+ 1707 00a9 00       		.byte	0
+ 1708 00aa 03       		.uleb128 0x3
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 37
+
+
+ 1709 00ab 0E       		.uleb128 0xe
+ 1710 00ac 3A       		.uleb128 0x3a
+ 1711 00ad 0B       		.uleb128 0xb
+ 1712 00ae 3B       		.uleb128 0x3b
+ 1713 00af 0B       		.uleb128 0xb
+ 1714 00b0 49       		.uleb128 0x49
+ 1715 00b1 13       		.uleb128 0x13
+ 1716 00b2 1C       		.uleb128 0x1c
+ 1717 00b3 0B       		.uleb128 0xb
+ 1718 00b4 00       		.byte	0
+ 1719 00b5 00       		.byte	0
+ 1720 00b6 0D       		.uleb128 0xd
+ 1721 00b7 0B       		.uleb128 0xb
+ 1722 00b8 01       		.byte	0x1
+ 1723 00b9 11       		.uleb128 0x11
+ 1724 00ba 01       		.uleb128 0x1
+ 1725 00bb 12       		.uleb128 0x12
+ 1726 00bc 06       		.uleb128 0x6
+ 1727 00bd 01       		.uleb128 0x1
+ 1728 00be 13       		.uleb128 0x13
+ 1729 00bf 00       		.byte	0
+ 1730 00c0 00       		.byte	0
+ 1731 00c1 0E       		.uleb128 0xe
+ 1732 00c2 34       		.uleb128 0x34
+ 1733 00c3 00       		.byte	0
+ 1734 00c4 03       		.uleb128 0x3
+ 1735 00c5 08       		.uleb128 0x8
+ 1736 00c6 3A       		.uleb128 0x3a
+ 1737 00c7 0B       		.uleb128 0xb
+ 1738 00c8 3B       		.uleb128 0x3b
+ 1739 00c9 0B       		.uleb128 0xb
+ 1740 00ca 49       		.uleb128 0x49
+ 1741 00cb 13       		.uleb128 0x13
+ 1742 00cc 02       		.uleb128 0x2
+ 1743 00cd 17       		.uleb128 0x17
+ 1744 00ce 00       		.byte	0
+ 1745 00cf 00       		.byte	0
+ 1746 00d0 0F       		.uleb128 0xf
+ 1747 00d1 898201   		.uleb128 0x4109
+ 1748 00d4 01       		.byte	0x1
+ 1749 00d5 11       		.uleb128 0x11
+ 1750 00d6 01       		.uleb128 0x1
+ 1751 00d7 31       		.uleb128 0x31
+ 1752 00d8 13       		.uleb128 0x13
+ 1753 00d9 01       		.uleb128 0x1
+ 1754 00da 13       		.uleb128 0x13
+ 1755 00db 00       		.byte	0
+ 1756 00dc 00       		.byte	0
+ 1757 00dd 10       		.uleb128 0x10
+ 1758 00de 8A8201   		.uleb128 0x410a
+ 1759 00e1 00       		.byte	0
+ 1760 00e2 02       		.uleb128 0x2
+ 1761 00e3 18       		.uleb128 0x18
+ 1762 00e4 9142     		.uleb128 0x2111
+ 1763 00e6 18       		.uleb128 0x18
+ 1764 00e7 00       		.byte	0
+ 1765 00e8 00       		.byte	0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 38
+
+
+ 1766 00e9 11       		.uleb128 0x11
+ 1767 00ea 898201   		.uleb128 0x4109
+ 1768 00ed 01       		.byte	0x1
+ 1769 00ee 11       		.uleb128 0x11
+ 1770 00ef 01       		.uleb128 0x1
+ 1771 00f0 31       		.uleb128 0x31
+ 1772 00f1 13       		.uleb128 0x13
+ 1773 00f2 00       		.byte	0
+ 1774 00f3 00       		.byte	0
+ 1775 00f4 12       		.uleb128 0x12
+ 1776 00f5 898201   		.uleb128 0x4109
+ 1777 00f8 00       		.byte	0
+ 1778 00f9 11       		.uleb128 0x11
+ 1779 00fa 01       		.uleb128 0x1
+ 1780 00fb 31       		.uleb128 0x31
+ 1781 00fc 13       		.uleb128 0x13
+ 1782 00fd 00       		.byte	0
+ 1783 00fe 00       		.byte	0
+ 1784 00ff 13       		.uleb128 0x13
+ 1785 0100 01       		.uleb128 0x1
+ 1786 0101 01       		.byte	0x1
+ 1787 0102 49       		.uleb128 0x49
+ 1788 0103 13       		.uleb128 0x13
+ 1789 0104 01       		.uleb128 0x1
+ 1790 0105 13       		.uleb128 0x13
+ 1791 0106 00       		.byte	0
+ 1792 0107 00       		.byte	0
+ 1793 0108 14       		.uleb128 0x14
+ 1794 0109 21       		.uleb128 0x21
+ 1795 010a 00       		.byte	0
+ 1796 010b 49       		.uleb128 0x49
+ 1797 010c 13       		.uleb128 0x13
+ 1798 010d 2F       		.uleb128 0x2f
+ 1799 010e 0B       		.uleb128 0xb
+ 1800 010f 00       		.byte	0
+ 1801 0110 00       		.byte	0
+ 1802 0111 15       		.uleb128 0x15
+ 1803 0112 34       		.uleb128 0x34
+ 1804 0113 00       		.byte	0
+ 1805 0114 03       		.uleb128 0x3
+ 1806 0115 0E       		.uleb128 0xe
+ 1807 0116 3A       		.uleb128 0x3a
+ 1808 0117 0B       		.uleb128 0xb
+ 1809 0118 3B       		.uleb128 0x3b
+ 1810 0119 05       		.uleb128 0x5
+ 1811 011a 49       		.uleb128 0x49
+ 1812 011b 13       		.uleb128 0x13
+ 1813 011c 3F       		.uleb128 0x3f
+ 1814 011d 19       		.uleb128 0x19
+ 1815 011e 3C       		.uleb128 0x3c
+ 1816 011f 19       		.uleb128 0x19
+ 1817 0120 00       		.byte	0
+ 1818 0121 00       		.byte	0
+ 1819 0122 16       		.uleb128 0x16
+ 1820 0123 35       		.uleb128 0x35
+ 1821 0124 00       		.byte	0
+ 1822 0125 49       		.uleb128 0x49
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 39
+
+
+ 1823 0126 13       		.uleb128 0x13
+ 1824 0127 00       		.byte	0
+ 1825 0128 00       		.byte	0
+ 1826 0129 17       		.uleb128 0x17
+ 1827 012a 2E       		.uleb128 0x2e
+ 1828 012b 00       		.byte	0
+ 1829 012c 3F       		.uleb128 0x3f
+ 1830 012d 19       		.uleb128 0x19
+ 1831 012e 3C       		.uleb128 0x3c
+ 1832 012f 19       		.uleb128 0x19
+ 1833 0130 6E       		.uleb128 0x6e
+ 1834 0131 0E       		.uleb128 0xe
+ 1835 0132 03       		.uleb128 0x3
+ 1836 0133 0E       		.uleb128 0xe
+ 1837 0134 3A       		.uleb128 0x3a
+ 1838 0135 0B       		.uleb128 0xb
+ 1839 0136 3B       		.uleb128 0x3b
+ 1840 0137 0B       		.uleb128 0xb
+ 1841 0138 00       		.byte	0
+ 1842 0139 00       		.byte	0
+ 1843 013a 18       		.uleb128 0x18
+ 1844 013b 2E       		.uleb128 0x2e
+ 1845 013c 00       		.byte	0
+ 1846 013d 3F       		.uleb128 0x3f
+ 1847 013e 19       		.uleb128 0x19
+ 1848 013f 3C       		.uleb128 0x3c
+ 1849 0140 19       		.uleb128 0x19
+ 1850 0141 6E       		.uleb128 0x6e
+ 1851 0142 0E       		.uleb128 0xe
+ 1852 0143 03       		.uleb128 0x3
+ 1853 0144 0E       		.uleb128 0xe
+ 1854 0145 3A       		.uleb128 0x3a
+ 1855 0146 0B       		.uleb128 0xb
+ 1856 0147 3B       		.uleb128 0x3b
+ 1857 0148 05       		.uleb128 0x5
+ 1858 0149 00       		.byte	0
+ 1859 014a 00       		.byte	0
+ 1860 014b 00       		.byte	0
+ 1861              		.section	.debug_loc,"",%progbits
+ 1862              	.Ldebug_loc0:
+ 1863              	.LLST0:
+ 1864 0000 42000000 		.4byte	.LVL8
+ 1865 0004 4C000000 		.4byte	.LVL9
+ 1866 0008 0100     		.2byte	0x1
+ 1867 000a 50       		.byte	0x50
+ 1868 000b 58000000 		.4byte	.LVL12
+ 1869 000f 5A000000 		.4byte	.LVL13
+ 1870 0013 0100     		.2byte	0x1
+ 1871 0015 50       		.byte	0x50
+ 1872 0016 6A000000 		.4byte	.LVL15
+ 1873 001a 74000000 		.4byte	.LVL16
+ 1874 001e 0100     		.2byte	0x1
+ 1875 0020 50       		.byte	0x50
+ 1876 0021 80000000 		.4byte	.LVL19
+ 1877 0025 82000000 		.4byte	.LVL20
+ 1878 0029 0100     		.2byte	0x1
+ 1879 002b 50       		.byte	0x50
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 40
+
+
+ 1880 002c 92000000 		.4byte	.LVL22
+ 1881 0030 9C000000 		.4byte	.LVL23
+ 1882 0034 0100     		.2byte	0x1
+ 1883 0036 50       		.byte	0x50
+ 1884 0037 A8000000 		.4byte	.LVL26
+ 1885 003b AA000000 		.4byte	.LVL27
+ 1886 003f 0100     		.2byte	0x1
+ 1887 0041 50       		.byte	0x50
+ 1888 0042 CA000000 		.4byte	.LVL30
+ 1889 0046 D4000000 		.4byte	.LVL31
+ 1890 004a 0100     		.2byte	0x1
+ 1891 004c 50       		.byte	0x50
+ 1892 004d E0000000 		.4byte	.LVL34
+ 1893 0051 E2000000 		.4byte	.LVL35
+ 1894 0055 0100     		.2byte	0x1
+ 1895 0057 50       		.byte	0x50
+ 1896 0058 F2000000 		.4byte	.LVL37
+ 1897 005c FC000000 		.4byte	.LVL38
+ 1898 0060 0100     		.2byte	0x1
+ 1899 0062 50       		.byte	0x50
+ 1900 0063 08010000 		.4byte	.LVL41
+ 1901 0067 0A010000 		.4byte	.LVL42
+ 1902 006b 0100     		.2byte	0x1
+ 1903 006d 50       		.byte	0x50
+ 1904 006e 18010000 		.4byte	.LVL44
+ 1905 0072 22010000 		.4byte	.LVL45
+ 1906 0076 0100     		.2byte	0x1
+ 1907 0078 50       		.byte	0x50
+ 1908 0079 2E010000 		.4byte	.LVL48
+ 1909 007d 30010000 		.4byte	.LVL49
+ 1910 0081 0100     		.2byte	0x1
+ 1911 0083 50       		.byte	0x50
+ 1912 0084 4E010000 		.4byte	.LVL53
+ 1913 0088 58010000 		.4byte	.LVL54
+ 1914 008c 0100     		.2byte	0x1
+ 1915 008e 50       		.byte	0x50
+ 1916 008f 64010000 		.4byte	.LVL57
+ 1917 0093 66010000 		.4byte	.LVL58
+ 1918 0097 0100     		.2byte	0x1
+ 1919 0099 50       		.byte	0x50
+ 1920 009a 98010000 		.4byte	.LVL61
+ 1921 009e A4010000 		.4byte	.LVL62
+ 1922 00a2 0100     		.2byte	0x1
+ 1923 00a4 50       		.byte	0x50
+ 1924 00a5 00000000 		.4byte	0
+ 1925 00a9 00000000 		.4byte	0
+ 1926              	.LLST1:
+ 1927 00ad A8010000 		.4byte	.LVL63
+ 1928 00b1 AC010000 		.4byte	.LVL64
+ 1929 00b5 0900     		.2byte	0x9
+ 1930 00b7 70       		.byte	0x70
+ 1931 00b8 00       		.sleb128 0
+ 1932 00b9 09       		.byte	0x9
+ 1933 00ba F4       		.byte	0xf4
+ 1934 00bb 24       		.byte	0x24
+ 1935 00bc 09       		.byte	0x9
+ 1936 00bd F8       		.byte	0xf8
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 41
+
+
+ 1937 00be 26       		.byte	0x26
+ 1938 00bf 9F       		.byte	0x9f
+ 1939 00c0 AC010000 		.4byte	.LVL64
+ 1940 00c4 AF010000 		.4byte	.LVL65-1
+ 1941 00c8 1400     		.2byte	0x14
+ 1942 00ca 91       		.byte	0x91
+ 1943 00cb B17F     		.sleb128 -79
+ 1944 00cd 94       		.byte	0x94
+ 1945 00ce 01       		.byte	0x1
+ 1946 00cf 08       		.byte	0x8
+ 1947 00d0 FF       		.byte	0xff
+ 1948 00d1 1A       		.byte	0x1a
+ 1949 00d2 38       		.byte	0x38
+ 1950 00d3 24       		.byte	0x24
+ 1951 00d4 73       		.byte	0x73
+ 1952 00d5 00       		.sleb128 0
+ 1953 00d6 21       		.byte	0x21
+ 1954 00d7 09       		.byte	0x9
+ 1955 00d8 F4       		.byte	0xf4
+ 1956 00d9 24       		.byte	0x24
+ 1957 00da 09       		.byte	0x9
+ 1958 00db F8       		.byte	0xf8
+ 1959 00dc 26       		.byte	0x26
+ 1960 00dd 9F       		.byte	0x9f
+ 1961 00de 00000000 		.4byte	0
+ 1962 00e2 00000000 		.4byte	0
+ 1963              	.LLST2:
+ 1964 00e6 E2010000 		.4byte	.LVL74
+ 1965 00ea E6010000 		.4byte	.LVL75
+ 1966 00ee 0900     		.2byte	0x9
+ 1967 00f0 70       		.byte	0x70
+ 1968 00f1 00       		.sleb128 0
+ 1969 00f2 09       		.byte	0x9
+ 1970 00f3 F4       		.byte	0xf4
+ 1971 00f4 24       		.byte	0x24
+ 1972 00f5 09       		.byte	0x9
+ 1973 00f6 F8       		.byte	0xf8
+ 1974 00f7 26       		.byte	0x26
+ 1975 00f8 9F       		.byte	0x9f
+ 1976 00f9 E6010000 		.4byte	.LVL75
+ 1977 00fd E9010000 		.4byte	.LVL76-1
+ 1978 0101 1400     		.2byte	0x14
+ 1979 0103 91       		.byte	0x91
+ 1980 0104 B37F     		.sleb128 -77
+ 1981 0106 94       		.byte	0x94
+ 1982 0107 01       		.byte	0x1
+ 1983 0108 08       		.byte	0x8
+ 1984 0109 FF       		.byte	0xff
+ 1985 010a 1A       		.byte	0x1a
+ 1986 010b 38       		.byte	0x38
+ 1987 010c 24       		.byte	0x24
+ 1988 010d 73       		.byte	0x73
+ 1989 010e 00       		.sleb128 0
+ 1990 010f 21       		.byte	0x21
+ 1991 0110 09       		.byte	0x9
+ 1992 0111 F4       		.byte	0xf4
+ 1993 0112 24       		.byte	0x24
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 42
+
+
+ 1994 0113 09       		.byte	0x9
+ 1995 0114 F8       		.byte	0xf8
+ 1996 0115 26       		.byte	0x26
+ 1997 0116 9F       		.byte	0x9f
+ 1998 0117 00000000 		.4byte	0
+ 1999 011b 00000000 		.4byte	0
+ 2000              	.LLST3:
+ 2001 011f 1C020000 		.4byte	.LVL85
+ 2002 0123 20020000 		.4byte	.LVL86
+ 2003 0127 0900     		.2byte	0x9
+ 2004 0129 70       		.byte	0x70
+ 2005 012a 00       		.sleb128 0
+ 2006 012b 09       		.byte	0x9
+ 2007 012c F4       		.byte	0xf4
+ 2008 012d 24       		.byte	0x24
+ 2009 012e 09       		.byte	0x9
+ 2010 012f F8       		.byte	0xf8
+ 2011 0130 26       		.byte	0x26
+ 2012 0131 9F       		.byte	0x9f
+ 2013 0132 20020000 		.4byte	.LVL86
+ 2014 0136 23020000 		.4byte	.LVL87-1
+ 2015 013a 1400     		.2byte	0x14
+ 2016 013c 91       		.byte	0x91
+ 2017 013d B57F     		.sleb128 -75
+ 2018 013f 94       		.byte	0x94
+ 2019 0140 01       		.byte	0x1
+ 2020 0141 08       		.byte	0x8
+ 2021 0142 FF       		.byte	0xff
+ 2022 0143 1A       		.byte	0x1a
+ 2023 0144 38       		.byte	0x38
+ 2024 0145 24       		.byte	0x24
+ 2025 0146 73       		.byte	0x73
+ 2026 0147 00       		.sleb128 0
+ 2027 0148 21       		.byte	0x21
+ 2028 0149 09       		.byte	0x9
+ 2029 014a F4       		.byte	0xf4
+ 2030 014b 24       		.byte	0x24
+ 2031 014c 09       		.byte	0x9
+ 2032 014d F8       		.byte	0xf8
+ 2033 014e 26       		.byte	0x26
+ 2034 014f 9F       		.byte	0x9f
+ 2035 0150 00000000 		.4byte	0
+ 2036 0154 00000000 		.4byte	0
+ 2037              	.LLST4:
+ 2038 0158 B0010000 		.4byte	.LVL65
+ 2039 015c B3010000 		.4byte	.LVL66-1
+ 2040 0160 0100     		.2byte	0x1
+ 2041 0162 50       		.byte	0x50
+ 2042 0163 CA010000 		.4byte	.LVL69
+ 2043 0167 CF010000 		.4byte	.LVL70-1
+ 2044 016b 0100     		.2byte	0x1
+ 2045 016d 50       		.byte	0x50
+ 2046 016e D6010000 		.4byte	.LVL72
+ 2047 0172 DE010000 		.4byte	.LVL73
+ 2048 0176 0100     		.2byte	0x1
+ 2049 0178 50       		.byte	0x50
+ 2050 0179 DE010000 		.4byte	.LVL73
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 43
+
+
+ 2051 017d 00030000 		.4byte	.LFE64
+ 2052 0181 0100     		.2byte	0x1
+ 2053 0183 55       		.byte	0x55
+ 2054 0184 00000000 		.4byte	0
+ 2055 0188 00000000 		.4byte	0
+ 2056              	.LLST5:
+ 2057 018c EA010000 		.4byte	.LVL76
+ 2058 0190 ED010000 		.4byte	.LVL77-1
+ 2059 0194 0100     		.2byte	0x1
+ 2060 0196 50       		.byte	0x50
+ 2061 0197 04020000 		.4byte	.LVL80
+ 2062 019b 09020000 		.4byte	.LVL81-1
+ 2063 019f 0100     		.2byte	0x1
+ 2064 01a1 50       		.byte	0x50
+ 2065 01a2 10020000 		.4byte	.LVL83
+ 2066 01a6 18020000 		.4byte	.LVL84
+ 2067 01aa 0100     		.2byte	0x1
+ 2068 01ac 50       		.byte	0x50
+ 2069 01ad 18020000 		.4byte	.LVL84
+ 2070 01b1 00030000 		.4byte	.LFE64
+ 2071 01b5 0100     		.2byte	0x1
+ 2072 01b7 54       		.byte	0x54
+ 2073 01b8 00000000 		.4byte	0
+ 2074 01bc 00000000 		.4byte	0
+ 2075              	.LLST6:
+ 2076 01c0 24020000 		.4byte	.LVL87
+ 2077 01c4 27020000 		.4byte	.LVL88-1
+ 2078 01c8 0100     		.2byte	0x1
+ 2079 01ca 50       		.byte	0x50
+ 2080 01cb 3E020000 		.4byte	.LVL91
+ 2081 01cf 43020000 		.4byte	.LVL92-1
+ 2082 01d3 0100     		.2byte	0x1
+ 2083 01d5 50       		.byte	0x50
+ 2084 01d6 48020000 		.4byte	.LVL93
+ 2085 01da B2020000 		.4byte	.LVL94
+ 2086 01de 0100     		.2byte	0x1
+ 2087 01e0 50       		.byte	0x50
+ 2088 01e1 B2020000 		.4byte	.LVL94
+ 2089 01e5 00030000 		.4byte	.LFE64
+ 2090 01e9 0300     		.2byte	0x3
+ 2091 01eb 91       		.byte	0x91
+ 2092 01ec 947F     		.sleb128 -108
+ 2093 01ee 00000000 		.4byte	0
+ 2094 01f2 00000000 		.4byte	0
+ 2095              	.LLST7:
+ 2096 01f6 14000000 		.4byte	.LVL2
+ 2097 01fa 18000000 		.4byte	.LVL3
+ 2098 01fe 0200     		.2byte	0x2
+ 2099 0200 30       		.byte	0x30
+ 2100 0201 9F       		.byte	0x9f
+ 2101 0202 18000000 		.4byte	.LVL3
+ 2102 0206 38010000 		.4byte	.LVL51
+ 2103 020a 0100     		.2byte	0x1
+ 2104 020c 54       		.byte	0x54
+ 2105 020d 00000000 		.4byte	0
+ 2106 0211 00000000 		.4byte	0
+ 2107              		.section	.debug_aranges,"",%progbits
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 44
+
+
+ 2108 0000 1C000000 		.4byte	0x1c
+ 2109 0004 0200     		.2byte	0x2
+ 2110 0006 00000000 		.4byte	.Ldebug_info0
+ 2111 000a 04       		.byte	0x4
+ 2112 000b 00       		.byte	0
+ 2113 000c 0000     		.2byte	0
+ 2114 000e 0000     		.2byte	0
+ 2115 0010 00000000 		.4byte	.LFB64
+ 2116 0014 00030000 		.4byte	.LFE64-.LFB64
+ 2117 0018 00000000 		.4byte	0
+ 2118 001c 00000000 		.4byte	0
+ 2119              		.section	.debug_ranges,"",%progbits
+ 2120              	.Ldebug_ranges0:
+ 2121 0000 00000000 		.4byte	.LFB64
+ 2122 0004 00030000 		.4byte	.LFE64
+ 2123 0008 00000000 		.4byte	0
+ 2124 000c 00000000 		.4byte	0
+ 2125              		.section	.debug_line,"",%progbits
+ 2126              	.Ldebug_line0:
+ 2127 0000 84020000 		.section	.debug_str,"MS",%progbits,1
+ 2127      02000702 
+ 2127      00000201 
+ 2127      FB0E0D00 
+ 2127      01010101 
+ 2128              	.LASF25:
+ 2129 0000 6D657373 		.ascii	"message\000"
+ 2129      61676500 
+ 2130              	.LASF37:
+ 2131 0008 68656164 		.ascii	"header\000"
+ 2131      657200
+ 2132              	.LASF2:
+ 2133 000f 5F5F7569 		.ascii	"__uint8_t\000"
+ 2133      6E74385F 
+ 2133      7400
+ 2134              	.LASF47:
+ 2135 0019 55415254 		.ascii	"UART_Debug_PutString\000"
+ 2135      5F446562 
+ 2135      75675F50 
+ 2135      75745374 
+ 2135      72696E67 
+ 2136              	.LASF45:
+ 2137 002e 4932435F 		.ascii	"I2C_Peripheral_IsDeviceConnected\000"
+ 2137      50657269 
+ 2137      70686572 
+ 2137      616C5F49 
+ 2137      73446576 
+ 2138              	.LASF6:
+ 2139 004f 5F5F696E 		.ascii	"__int32_t\000"
+ 2139      7433325F 
+ 2139      7400
+ 2140              	.LASF39:
+ 2141 0059 58595A44 		.ascii	"XYZData\000"
+ 2141      61746100 
+ 2142              	.LASF7:
+ 2143 0061 6C6F6E67 		.ascii	"long int\000"
+ 2143      20696E74 
+ 2143      00
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 45
+
+
+ 2144              	.LASF41:
+ 2145 006a 4F757441 		.ascii	"OutArrayFloat\000"
+ 2145      72726179 
+ 2145      466C6F61 
+ 2145      7400
+ 2146              	.LASF55:
+ 2147 0078 55415254 		.ascii	"UART_Debug_PutArray\000"
+ 2147      5F446562 
+ 2147      75675F50 
+ 2147      75744172 
+ 2147      72617900 
+ 2148              	.LASF22:
+ 2149 008c 4572726F 		.ascii	"ErrorCode\000"
+ 2149      72436F64 
+ 2149      6500
+ 2150              	.LASF40:
+ 2151 0096 72656769 		.ascii	"register_count\000"
+ 2151      73746572 
+ 2151      5F636F75 
+ 2151      6E7400
+ 2152              	.LASF14:
+ 2153 00a5 696E7433 		.ascii	"int32_t\000"
+ 2153      325F7400 
+ 2154              	.LASF17:
+ 2155 00ad 666C6F61 		.ascii	"float\000"
+ 2155      7400
+ 2156              	.LASF54:
+ 2157 00b3 726F756E 		.ascii	"roundf\000"
+ 2157      646600
+ 2158              	.LASF58:
+ 2159 00ba 443A5C50 		.ascii	"D:\\POLITECNICO\\magistrale\\secondo\\secondo\\lab "
+ 2159      4F4C4954 
+ 2159      45434E49 
+ 2159      434F5C6D 
+ 2159      61676973 
+ 2160 00e8 62696F73 		.ascii	"biosensor\\HOMEWORK\\ASSIGNMENT_05\\AY1920_II_HW_05"
+ 2160      656E736F 
+ 2160      725C484F 
+ 2160      4D45574F 
+ 2160      524B5C41 
+ 2161 0118 5F515541 		.ascii	"_QUARANTA_MATTIA\\AY1920_II_HW_05_QUARANTA_MATTIA\\"
+ 2161      52414E54 
+ 2161      415F4D41 
+ 2161      54544941 
+ 2161      5C415931 
+ 2162 0149 41593139 		.ascii	"AY1920_II_HW_05_PROJ_3.cydsn\000"
+ 2162      32305F49 
+ 2162      495F4857 
+ 2162      5F30355F 
+ 2162      50524F4A 
+ 2163              	.LASF1:
+ 2164 0166 756E7369 		.ascii	"unsigned char\000"
+ 2164      676E6564 
+ 2164      20636861 
+ 2164      7200
+ 2165              	.LASF56:
+ 2166 0174 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 46
+
+
+ 2166      43313120 
+ 2166      352E342E 
+ 2166      31203230 
+ 2166      31363036 
+ 2167 01a7 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2167      20726576 
+ 2167      6973696F 
+ 2167      6E203233 
+ 2167      37373135 
+ 2168 01da 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2168      66756E63 
+ 2168      74696F6E 
+ 2168      2D736563 
+ 2168      74696F6E 
+ 2169              	.LASF15:
+ 2170 0202 696E7431 		.ascii	"int16\000"
+ 2170      3600
+ 2171              	.LASF8:
+ 2172 0208 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2172      20756E73 
+ 2172      69676E65 
+ 2172      6420696E 
+ 2172      7400
+ 2173              	.LASF5:
+ 2174 021a 73686F72 		.ascii	"short unsigned int\000"
+ 2174      7420756E 
+ 2174      7369676E 
+ 2174      65642069 
+ 2174      6E7400
+ 2175              	.LASF38:
+ 2176 022d 666F6F74 		.ascii	"footer\000"
+ 2176      657200
+ 2177              	.LASF18:
+ 2178 0234 646F7562 		.ascii	"double\000"
+ 2178      6C6500
+ 2179              	.LASF53:
+ 2180 023b 4932435F 		.ascii	"I2C_Peripheral_ReadRegisterMulti\000"
+ 2180      50657269 
+ 2180      70686572 
+ 2180      616C5F52 
+ 2180      65616452 
+ 2181              	.LASF52:
+ 2182 025c 4932435F 		.ascii	"I2C_Peripheral_WriteRegister\000"
+ 2182      50657269 
+ 2182      70686572 
+ 2182      616C5F57 
+ 2182      72697465 
+ 2183              	.LASF59:
+ 2184 0279 6D61696E 		.ascii	"main\000"
+ 2184      00
+ 2185              	.LASF16:
+ 2186 027e 666C6F61 		.ascii	"float32\000"
+ 2186      74333200 
+ 2187              	.LASF3:
+ 2188 0286 5F5F696E 		.ascii	"__int16_t\000"
+ 2188      7431365F 
+ 2188      7400
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 47
+
+
+ 2189              	.LASF29:
+ 2190 0290 6374726C 		.ascii	"ctrl_reg1\000"
+ 2190      5F726567 
+ 2190      3100
+ 2191              	.LASF42:
+ 2192 029a 61636378 		.ascii	"accx\000"
+ 2192      00
+ 2193              	.LASF43:
+ 2194 029f 61636379 		.ascii	"accy\000"
+ 2194      00
+ 2195              	.LASF30:
+ 2196 02a4 6374726C 		.ascii	"ctrl_reg4\000"
+ 2196      5F726567 
+ 2196      3400
+ 2197              	.LASF11:
+ 2198 02ae 756E7369 		.ascii	"unsigned int\000"
+ 2198      676E6564 
+ 2198      20696E74 
+ 2198      00
+ 2199              	.LASF44:
+ 2200 02bb 6163637A 		.ascii	"accz\000"
+ 2200      00
+ 2201              	.LASF10:
+ 2202 02c0 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2202      206C6F6E 
+ 2202      6720756E 
+ 2202      7369676E 
+ 2202      65642069 
+ 2203              	.LASF12:
+ 2204 02d7 75696E74 		.ascii	"uint8_t\000"
+ 2204      385F7400 
+ 2205              	.LASF13:
+ 2206 02df 696E7431 		.ascii	"int16_t\000"
+ 2206      365F7400 
+ 2207              	.LASF60:
+ 2208 02e7 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2208      52784275 
+ 2208      66666572 
+ 2208      00
+ 2209              	.LASF31:
+ 2210 02f4 4F757458 		.ascii	"OutX\000"
+ 2210      00
+ 2211              	.LASF32:
+ 2212 02f9 4F757459 		.ascii	"OutY\000"
+ 2212      00
+ 2213              	.LASF33:
+ 2214 02fe 4F75745A 		.ascii	"OutZ\000"
+ 2214      00
+ 2215              	.LASF24:
+ 2216 0303 73697A65 		.ascii	"sizetype\000"
+ 2216      74797065 
+ 2216      00
+ 2217              	.LASF27:
+ 2218 030c 6572726F 		.ascii	"error\000"
+ 2218      7200
+ 2219              	.LASF9:
+ 2220 0312 6C6F6E67 		.ascii	"long long int\000"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 48
+
+
+ 2220      206C6F6E 
+ 2220      6720696E 
+ 2220      7400
+ 2221              	.LASF49:
+ 2222 0320 55415254 		.ascii	"UART_Debug_Start\000"
+ 2222      5F446562 
+ 2222      75675F53 
+ 2222      74617274 
+ 2222      00
+ 2223              	.LASF57:
+ 2224 0331 6D61696E 		.ascii	"main.c\000"
+ 2224      2E6300
+ 2225              	.LASF19:
+ 2226 0338 63686172 		.ascii	"char\000"
+ 2226      00
+ 2227              	.LASF34:
+ 2228 033d 4F757458 		.ascii	"OutXfloat\000"
+ 2228      666C6F61 
+ 2228      7400
+ 2229              	.LASF51:
+ 2230 0347 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
+ 2230      50657269 
+ 2230      70686572 
+ 2230      616C5F52 
+ 2230      65616452 
+ 2231              	.LASF4:
+ 2232 0363 73686F72 		.ascii	"short int\000"
+ 2232      7420696E 
+ 2232      7400
+ 2233              	.LASF36:
+ 2234 036d 4F75745A 		.ascii	"OutZfloat\000"
+ 2234      666C6F61 
+ 2234      7400
+ 2235              	.LASF20:
+ 2236 0377 4E4F5F45 		.ascii	"NO_ERROR\000"
+ 2236      52524F52 
+ 2236      00
+ 2237              	.LASF21:
+ 2238 0380 4552524F 		.ascii	"ERROR\000"
+ 2238      5200
+ 2239              	.LASF28:
+ 2240 0386 73746174 		.ascii	"status_register\000"
+ 2240      75735F72 
+ 2240      65676973 
+ 2240      74657200 
+ 2241              	.LASF23:
+ 2242 0396 6C6F6E67 		.ascii	"long double\000"
+ 2242      20646F75 
+ 2242      626C6500 
+ 2243              	.LASF0:
+ 2244 03a2 7369676E 		.ascii	"signed char\000"
+ 2244      65642063 
+ 2244      68617200 
+ 2245              	.LASF26:
+ 2246 03ae 77686F5F 		.ascii	"who_am_i_reg\000"
+ 2246      616D5F69 
+ 2246      5F726567 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\cc7FR4bm.s 			page 49
+
+
+ 2246      00
+ 2247              	.LASF46:
+ 2248 03bb 73707269 		.ascii	"sprintf\000"
+ 2248      6E746600 
+ 2249              	.LASF50:
+ 2250 03c3 43794465 		.ascii	"CyDelay\000"
+ 2250      6C617900 
+ 2251              	.LASF48:
+ 2252 03cb 4932435F 		.ascii	"I2C_Peripheral_Start\000"
+ 2252      50657269 
+ 2252      70686572 
+ 2252      616C5F53 
+ 2252      74617274 
+ 2253              	.LASF35:
+ 2254 03e0 4F757459 		.ascii	"OutYfloat\000"
+ 2254      666C6F61 
+ 2254      7400
+ 2255              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
