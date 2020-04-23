@@ -3,16 +3,16 @@
      /* Test to verify the multi write function */
      /******************************************/
     /*
-    uint8_t ctrl_reg23[2];
+    uint8_t ctrl_reg56[2];
 
     error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                        0x21,
+                                        0x25,
                                         1,
                                         &ctrl_reg23[0]);
     
     if (error == NO_ERROR)
     {
-        sprintf(message, "CONTROL REGISTER 2 and 3: 0x%02X\r\n and 0x%02X\r\n", ctrl_reg23[0],ctrl_reg23[1] );
+        sprintf(message, "CONTROL REGISTER 5 and 6: 0x%02X\r\n and 0x%02X\r\n", ctrl_reg56[0],ctrl_reg56[1] );
         UART_Debug_PutString(message); 
     }
     else
@@ -25,23 +25,23 @@
     ctrl_reg23[1] = 0x51;// must be changed to the appropriate value
     
     error = I2C_Peripheral_WriteRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                         0x21,
+                                         0x25,
                                          1,   
                                          &ctrl_reg23[0]);
     
     error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                        0x21,
+                                        0x25,
                                         1,
                                         &ctrl_reg23[0]);
     
     
     if (error == NO_ERROR)
     {
-        sprintf(message, "CONTROL REGISTER 2 Adn 3 after being updated: 0x%02X\r\n and 0x%02X\r\n", ctrl_reg23[0],ctrl_reg23[1]);
+        sprintf(message, "CONTROL REGISTER 5 Adn 6 after being updated: 0x%02X\r\n and 0x%02X\r\n", ctrl_reg56[0],ctrl_reg56[1]);
         UART_Debug_PutString(message); 
     }
     else
     {
-        UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
+        UART_Debug_PutString("Error occurred during I2C comm to read control register56\r\n");   
     }
     */

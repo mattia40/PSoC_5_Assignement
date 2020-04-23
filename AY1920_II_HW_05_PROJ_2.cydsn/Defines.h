@@ -78,7 +78,12 @@
 #define LIS3DH_OUT_Z_L 0x2C
 #define LIS3DH_OUT_Z_H 0x2D
 
-
+/*
+*   \brief Conversion digit-->mg
+*/
+#define CONVERSION_CONSTANT_mg 4
+    
+    
 #endif
 
 /* [] END OF FILE */

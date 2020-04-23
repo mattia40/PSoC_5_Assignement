@@ -194,7 +194,7 @@ int main(void)
     int16_t OutY;//used to merge the two uint8_t value from the array XYZData relative to the y direction
     int16_t OutZ;//used to merge the two uint8_t value from the array XYZData relative to the z direction
     uint8_t header = 0xA0;//header for UART comunication
-    uint8_t footer = 0xC0;//header for UART comunication
+    uint8_t footer = 0xC0;//footer for UART comunication
     uint8_t OutArray[8]; //array to be sent through UART
     uint8_t XYZData[10];//Array used to read data
     uint8_t register_count=5;//it is 5--> we need to read six value, from *(data) to  *(data+5)
@@ -209,7 +209,8 @@ int main(void)
                                         LIS3DH_STATUS_REG,
                                         &status_register);
         
-        // only if there are new Data  available, we comunicate with the UART
+        // only if there are new Data  available, we comunicate with the UART. In addition in this way we obtain 
+        //a sample rate in the bridge control panel of 100 samples per sec
         if(status_register & (1<<LIS3DH_STATUS_REG_ACTIVE_ZYXDA))
         {
             //Use of multi-read function to read 6 consequent registers starting from OUT_X_L
@@ -224,6 +225,11 @@ int main(void)
                 OutX = (int16)((XYZData[0] | (XYZData[1]<<8)))>>6;//merge data into a single int16 variable
                 OutY = (int16)((XYZData[2] | (XYZData[3]<<8)))>>6;//merge data into a single int16 variable
                 OutZ = (int16)((XYZData[4] | (XYZData[5]<<8)))>>6;//merge data into a single int16 variable
+                
+                //From the Datasheet we can read that in the normal mode we have a correspondece of 4 mg/digit
+                OutX=OutX*CONVERSION_CONSTANT_mg;//Conversion into mg
+                OutY=OutY*CONVERSION_CONSTANT_mg;//Conversion into mg
+                OutZ=OutZ*CONVERSION_CONSTANT_mg;//Conversion into mg
                
                 OutArray[1] = (uint8_t)(OutX & 0xFF);//copy of the LSB of x into the position 1 of the array
                 OutArray[2] = (uint8_t)(OutX >> 8);//copy of the MSB of x into the position 2 of the array

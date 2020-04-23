@@ -74,7 +74,7 @@
     {
         uint8 i=0;
         //from datasheet we read that to apply the multi-read funcion, the most significant bit must be high
-        register_address=register_address|10000000;
+        register_address |= 0x80 ;
         // Send start condition
         uint8_t error= I2C_Master_MasterSendStart(device_address,I2C_Master_WRITE_XFER_MODE);
         if (error == I2C_Master_MSTR_NO_ERROR)
@@ -91,8 +91,8 @@
                 {
                     // Read data with acknowledgement)
                     /*
-                    *   it is lower then register_count because when you reah i=register count, you have to 
-                    *   exit from the fro loop and send a NAK
+                    *   it is lower than register_count because when you reach i=register count, you have to 
+                    *   exit from the for loop and send a NAK
                     */
                     for(i=0;i<register_count;i++)
                     {
@@ -145,7 +145,7 @@
     {
         uint8 i=0;
         //from datasheet we read that to apply the multi-write funcion, the most significant bit must be high
-        register_address=register_address|10000000;
+        register_address |= 0x80;
         // Send start condition
         uint8_t error = I2C_Master_MasterSendStart(device_address, I2C_Master_WRITE_XFER_MODE);
         if (error == I2C_Master_MSTR_NO_ERROR)
@@ -156,9 +156,9 @@
             {
                 // Write byte of interest
                 /*
-                *   it is <= then register_count because when you want to write over all the register
+                *   it is <= than register_count because when you want to write over all the register
                 */
-                for(i=0;i<=register_count;i++)//minore uguale per prendere tutti i valori
+                for(i=0;i<=register_count;i++)
                 {
                     error = I2C_Master_MasterWriteByte(*(data+i));
                 }
