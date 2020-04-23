@@ -219,53 +219,7 @@ int main(void)
     {
         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
     }
-    
-     /******************************************/
-     /* Test to verify the multi write function */
-     /******************************************/
-    /*
-    uint8_t ctrl_reg23[2];
-
-    error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                        0x21,
-                                        2,
-                                        &ctrl_reg23[0]);
-    
-    if (error == NO_ERROR)
-    {
-        sprintf(message, "CONTROL REGISTER 2 and 3: 0x%02X\r\n and 0x%02X\r\n", ctrl_reg23[0],ctrl_reg23[1] );
-        UART_Debug_PutString(message); 
-    }
-    else
-    {
-        UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
-    }
-    
-    
-    ctrl_reg23[0] = 0x50;
-    ctrl_reg23[1] = 0x51;// must be changed to the appropriate value
-    
-    error = I2C_Peripheral_WriteRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                         0x21,
-                                         1,   
-                                         &ctrl_reg23[0]);
-    
-    error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                        0x21,
-                                        1,
-                                        &ctrl_reg23[0]);
-    
-    
-    if (error == NO_ERROR)
-    {
-        sprintf(message, "CONTROL REGISTER 2 Adn 3 after being updated: 0x%02X\r\n and 0x%02X\r\n", ctrl_reg23[0],ctrl_reg23[1]);
-        UART_Debug_PutString(message); 
-    }
-    else
-    {
-        UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
-    }
-    */
+  
     int16_t OutTemp;//used to merge the two uint8_t value from the array TemperaturData
     uint8_t header = 0xA0;//header for UART comunication
     uint8_t footer = 0xC0;//tail for UART comunication

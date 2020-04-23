@@ -74,7 +74,7 @@
     {
         uint8 i=0;
         //from datasheet we read that to apply the multi-read funcion, the most significant bit must be high
-        register_address |=0x80;
+        register_address=register_address|10000000;
         // Send start condition
         uint8_t error= I2C_Master_MasterSendStart(device_address,I2C_Master_WRITE_XFER_MODE);
         if (error == I2C_Master_MSTR_NO_ERROR)
@@ -145,7 +145,7 @@
     {
         uint8 i=0;
         //from datasheet we read that to apply the multi-write funcion, the most significant bit must be high
-        register_address |=0x80;
+        register_address=register_address|10000000;
         // Send start condition
         uint8_t error = I2C_Master_MasterSendStart(device_address, I2C_Master_WRITE_XFER_MODE);
         if (error == I2C_Master_MSTR_NO_ERROR)
