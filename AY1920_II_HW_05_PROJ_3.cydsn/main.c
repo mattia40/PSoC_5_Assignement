@@ -234,9 +234,9 @@ int main(void)
                 
                 OutXfloat=(float32)OutX;//cast float
                 
-                OutXfloat=(OutXfloat*9.81)/1024;//conversion in m/s^2
+                OutXfloat=(OutXfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
                 
-                OutXfloat=roundf(OutXfloat*1000);//save three decimals
+                //OutXfloat=roundf(OutXfloat*1000);if you want to send only three decimals
                 
                 
                 
@@ -245,9 +245,9 @@ int main(void)
                 
                 OutYfloat=(float32)OutY;//cast float
                 
-                OutYfloat=(OutYfloat*9.81)/1024;//conversion in m/s^2
+                OutYfloat=(OutYfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
                  
-                OutYfloat=roundf(OutYfloat*1000);//save three decimals
+                //OutYfloat=roundf(OutYfloat*1000);if you want to send only three decimals
                 
                 
                 
@@ -255,12 +255,16 @@ int main(void)
                 
                 OutZfloat=(float32)OutZ;//cast float
        
-                OutZfloat=(OutZfloat*9.81)/1024;//conversion in m/s^2
+                OutZfloat=(OutZfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
                 
-                OutZfloat=roundf(OutZfloat*1000);//save three decimals
+                //OutZfloat=roundf(OutZfloat*1000); if you want to send only three decimals
                 
-                 
-                
+                /* 
+                *   We could multiply the float by 1000 or more to save at least 3 decimals and then cast in an int:
+                *   then we can take advantage of the scale in the variable settings of the bridge control panel
+                *   IN THIS WAY (below) WE ARE ABLE TO SEND FLOAT VALUES TO BRIDGE CONTROL PANEL WITHOUT USING THE SCALE
+                *   VARIABLE IN THE VARIABLE SETTINGS
+                */
                 *(float*)(accx)=OutXfloat;//save the float into the uint8_t through the pointer
                 *(float*)(accy)=OutYfloat;//save the float into the uint8_t through the pointer
                 *(float*)(accz)=OutZfloat;//save the float into the uint8_t through the pointer
@@ -280,21 +284,7 @@ int main(void)
                 OutArrayFloat[12] =accz[3] ;//copy of the MSB of the acc in the z direction into the position 12 of the array
                 UART_Debug_PutArray(OutArrayFloat, 14);
                 
-                /**************************************
-                *Useful function to read with CoolTerm
-                ****************************************/
-                /*
-                int bytesWritten;     
-                char myString[50];     
-                bytesWritten = sprintf(myString, "%d", accx);     
-                UART_Debug_PutString(myString);    
-                UART_Debug_PutString("\r\n");  
-                bytesWritten = sprintf(myString, "%d", accy);     
-                UART_Debug_PutString(myString);    
-                UART_Debug_PutString("\r\n"); 
-                bytesWritten = sprintf(myString, "%d", accz);     
-                UART_Debug_PutString(myString);    
-                UART_Debug_PutString("\r\n");*/
+                
             }
         }
     }

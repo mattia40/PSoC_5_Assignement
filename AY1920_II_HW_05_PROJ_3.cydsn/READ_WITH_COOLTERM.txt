@@ -1,0 +1,15 @@
+/**************************************
+*Useful function to read with CoolTerm
+****************************************/
+/*
+int bytesWritten;     
+char myString[50];     
+bytesWritten = sprintf(myString, "%d", accx);     
+UART_Debug_PutString(myString);    
+UART_Debug_PutString("\r\n");  
+bytesWritten = sprintf(myString, "%d", accy);     
+UART_Debug_PutString(myString);    
+UART_Debug_PutString("\r\n"); 
+bytesWritten = sprintf(myString, "%d", accz);     
+UART_Debug_PutString(myString);    
+UART_Debug_PutString("\r\n");*/

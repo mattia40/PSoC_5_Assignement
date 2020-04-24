@@ -91,8 +91,8 @@
                 {
                     // Read data with acknowledgement)
                     /*
-                    *   it is lower then register_count because when you reah i=register count, you have to 
-                    *   exit from the fro loop and send a NAK
+                    *   it is lower than register_count because when you reah i=register count, you have to 
+                    *   exit from the for loop and send a NAK
                     */
                     for(i=0;i<register_count;i++)
                     {
@@ -155,9 +155,9 @@
             {
                 // Write byte of interest
                 /*
-                *   it is <= then register_count because when you want to write over all the register
+                *   it is <= than register_count because when you want to write over all the register
                 */
-                for(i=0;i<=register_count;i++)//minore uguale per prendere tutti i valori
+                for(i=0;i<=register_count;i++)
                 {
                     error = I2C_Master_MasterWriteByte(*(data+i));
                 }
