@@ -1,4 +1,4 @@
---------------- Build Started: 04/23/2020 23:17:29 Project: AY1920_II_HW_05_PROJ_2, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+--------------- Build Started: 04/25/2020 22:02:36 Project: AY1920_II_HW_05_PROJ_2, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
 cydsfit.exe -.appdatapath "C:\Users\Mattia40\AppData\Local\Cypress Semiconductor\PSoC Creator\4.3" -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -.fdsreffile=referenced_files.txt -p C:\Users\Mattia40\Desktop\git\PSoC_03_Complete\PSoC_03\AY1920_II_HW_05_PROJ_2.cydsn\AY1920_II_HW_05_PROJ_2.cyprj -d CY8C5888LTI-LP097 -s C:\Users\Mattia40\Desktop\git\PSoC_03_Complete\PSoC_03\AY1920_II_HW_05_PROJ_2.cydsn\Generated_Source\PSoC5 -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE
 Elaborating Design...
 HDL Generation...
@@ -24,6 +24,6 @@ No ELF section .cychecksum found, creating one
 Application checksum calculated and stored in ELF section .cychecksum
 Checksum calculated and stored in ELF section .cymeta
 cyelftool.exe -S C:\Users\Mattia40\Desktop\git\PSoC_03_Complete\PSoC_03\AY1920_II_HW_05_PROJ_2.cydsn\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_2.elf
-Flash used: 6720 of 262144 bytes (2,6%).
+Flash used: 6768 of 262144 bytes (2,6%).
 SRAM used: 2561 of 65536 bytes (3,9%). Stack: 2048 bytes. Heap: 128 bytes.
---------------- Build Succeeded: 04/23/2020 23:17:44 ---------------
+--------------- Build Succeeded: 04/25/2020 22:02:50 ---------------

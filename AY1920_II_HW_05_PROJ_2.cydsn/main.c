@@ -111,6 +111,10 @@ int main(void)
     
     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1)//LP a 0
     {
+        /**
+        *   \brief Hex value to set the frequency of the accelerator in normal mode (the normal mode 
+        *   is set by leaving low the bit Lpen in the CTRL_REG1 and low the bit HR in the CTRL_REG4)
+        */
         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1;
     
         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,

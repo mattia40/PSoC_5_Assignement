@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 1
 
 
    1              		.syntax unified
@@ -54,16 +54,15 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
   20:main.c        **** #include "I2C_Interface.h"
   21:main.c        **** #include "project.h"
   22:main.c        **** #include "stdio.h"
-  23:main.c        **** #include "math.h"
-  24:main.c        **** #include "Defines.h"
+  23:main.c        **** #include "Defines.h"
+  24:main.c        **** 
   25:main.c        **** 
-  26:main.c        **** 
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 2
+  26:main.c        **** int main(void)
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 2
 
 
-  27:main.c        **** int main(void)
-  28:main.c        **** {
-  32              		.loc 1 28 0
+  27:main.c        **** {
+  32              		.loc 1 27 0
   33              		.cfi_startproc
   34              		@ args = 0, pretend = 0, frame = 96
   35              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -74,546 +73,551 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
   40              		.cfi_offset 14, -4
   41 0002 99B0     		sub	sp, sp, #100
   42              		.cfi_def_cfa_offset 112
-  29:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
-  43              		.loc 1 29 0
+  28:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  43              		.loc 1 28 0
   44              		.syntax unified
-  45              	@ 29 "main.c" 1
+  45              	@ 28 "main.c" 1
   46 0004 62B6     		CPSIE   i
   47              	@ 0 "" 2
-  30:main.c        **** 
-  31:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-  32:main.c        ****     I2C_Peripheral_Start();
-  48              		.loc 1 32 0
+  29:main.c        **** 
+  30:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  31:main.c        ****     I2C_Peripheral_Start();
+  48              		.loc 1 31 0
   49              		.thumb
   50              		.syntax unified
   51 0006 FFF7FEFF 		bl	I2C_Peripheral_Start
   52              	.LVL0:
-  33:main.c        ****     UART_Debug_Start();
-  53              		.loc 1 33 0
+  32:main.c        ****     UART_Debug_Start();
+  53              		.loc 1 32 0
   54 000a FFF7FEFF 		bl	UART_Debug_Start
   55              	.LVL1:
-  34:main.c        ****     
-  35:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
-  56              		.loc 1 35 0
+  33:main.c        ****     
+  34:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
+  56              		.loc 1 34 0
   57 000e 0520     		movs	r0, #5
   58 0010 FFF7FEFF 		bl	CyDelay
   59              	.LVL2:
   60              	.LBB2:
-  36:main.c        ****     
-  37:main.c        ****     // String to print out messages on the UART
-  38:main.c        ****     char message[50];
-  39:main.c        **** 
-  40:main.c        ****     // Check which devices are present on the I2C bus
-  41:main.c        ****     for (int i = 0 ; i < 128; i++)
-  61              		.loc 1 41 0
+  35:main.c        ****     
+  36:main.c        ****     // String to print out messages on the UART
+  37:main.c        ****     char message[50];
+  38:main.c        **** 
+  39:main.c        ****     // Check which devices are present on the I2C bus
+  40:main.c        ****     for (int i = 0 ; i < 128; i++)
+  61              		.loc 1 40 0
   62 0014 0024     		movs	r4, #0
   63 0016 0CE0     		b	.L2
   64              	.LVL3:
   65              	.L4:
-  42:main.c        ****     {
-  43:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
-  66              		.loc 1 43 0
+  41:main.c        ****     {
+  42:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
+  66              		.loc 1 42 0
   67 0018 E0B2     		uxtb	r0, r4
   68 001a FFF7FEFF 		bl	I2C_Peripheral_IsDeviceConnected
   69              	.LVL4:
   70 001e 38B1     		cbz	r0, .L3
-  44:main.c        ****         {
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 3
+  43:main.c        ****         {
+  44:main.c        ****             // print out the address is hex format
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 3
 
 
-  45:main.c        ****             // print out the address is hex format
-  46:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
-  71              		.loc 1 46 0
+  45:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
+  71              		.loc 1 45 0
   72 0020 2246     		mov	r2, r4
   73 0022 A149     		ldr	r1, .L23+8
   74 0024 0BA8     		add	r0, sp, #44
   75 0026 FFF7FEFF 		bl	sprintf
   76              	.LVL5:
-  47:main.c        ****             UART_Debug_PutString(message); 
-  77              		.loc 1 47 0
+  46:main.c        ****             UART_Debug_PutString(message); 
+  77              		.loc 1 46 0
   78 002a 0BA8     		add	r0, sp, #44
   79 002c FFF7FEFF 		bl	UART_Debug_PutString
   80              	.LVL6:
   81              	.L3:
-  41:main.c        ****     {
-  82              		.loc 1 41 0 discriminator 2
+  40:main.c        ****     {
+  82              		.loc 1 40 0 discriminator 2
   83 0030 0134     		adds	r4, r4, #1
   84              	.LVL7:
   85              	.L2:
-  41:main.c        ****     {
-  86              		.loc 1 41 0 is_stmt 0 discriminator 1
+  40:main.c        ****     {
+  86              		.loc 1 40 0 is_stmt 0 discriminator 1
   87 0032 7F2C     		cmp	r4, #127
   88 0034 F0DD     		ble	.L4
   89              	.LBE2:
-  48:main.c        ****         }
-  49:main.c        ****         
-  50:main.c        ****     }
-  51:main.c        ****     
-  52:main.c        ****     /******************************************/
-  53:main.c        ****     /*            I2C Reading                 */
-  54:main.c        ****     /******************************************/
-  55:main.c        ****     
-  56:main.c        ****     /* Read WHO AM I REGISTER register */
-  57:main.c        ****     uint8_t who_am_i_reg;
-  58:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-  90              		.loc 1 58 0 is_stmt 1
+  47:main.c        ****         }
+  48:main.c        ****         
+  49:main.c        ****     }
+  50:main.c        ****     
+  51:main.c        ****     /******************************************/
+  52:main.c        ****     /*            I2C Reading                 */
+  53:main.c        ****     /******************************************/
+  54:main.c        ****     
+  55:main.c        ****     /* Read WHO AM I REGISTER register */
+  56:main.c        ****     uint8_t who_am_i_reg;
+  57:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  90              		.loc 1 57 0 is_stmt 1
   91 0036 0DF12B02 		add	r2, sp, #43
   92 003a 0F21     		movs	r1, #15
   93 003c 1820     		movs	r0, #24
   94 003e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
   95              	.LVL8:
-  59:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
-  60:main.c        ****                                                   &who_am_i_reg);
-  61:main.c        ****     if (error == NO_ERROR)
-  96              		.loc 1 61 0
+  58:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
+  59:main.c        ****                                                   &who_am_i_reg);
+  60:main.c        ****     if (error == NO_ERROR)
+  96              		.loc 1 60 0
   97 0042 48B9     		cbnz	r0, .L5
-  62:main.c        ****     {
-  63:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
-  98              		.loc 1 63 0
+  61:main.c        ****     {
+  62:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
+  98              		.loc 1 62 0
   99 0044 9DF82B20 		ldrb	r2, [sp, #43]	@ zero_extendqisi2
  100 0048 9849     		ldr	r1, .L23+12
  101 004a 0BA8     		add	r0, sp, #44
  102              	.LVL9:
  103 004c FFF7FEFF 		bl	sprintf
  104              	.LVL10:
-  64:main.c        ****         UART_Debug_PutString(message); 
- 105              		.loc 1 64 0
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 4
-
-
+  63:main.c        ****         UART_Debug_PutString(message); 
+ 105              		.loc 1 63 0
  106 0050 0BA8     		add	r0, sp, #44
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 4
+
+
  107 0052 FFF7FEFF 		bl	UART_Debug_PutString
  108              	.LVL11:
  109 0056 02E0     		b	.L6
  110              	.LVL12:
  111              	.L5:
-  65:main.c        ****     }
-  66:main.c        ****     else
-  67:main.c        ****     {
-  68:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
- 112              		.loc 1 68 0
+  64:main.c        ****     }
+  65:main.c        ****     else
+  66:main.c        ****     {
+  67:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
+ 112              		.loc 1 67 0
  113 0058 9548     		ldr	r0, .L23+16
  114              	.LVL13:
  115 005a FFF7FEFF 		bl	UART_Debug_PutString
  116              	.LVL14:
  117              	.L6:
-  69:main.c        ****     }
-  70:main.c        ****     
-  71:main.c        ****     /*      I2C Reading Status Register       */
-  72:main.c        ****     
-  73:main.c        ****     uint8_t status_register; 
-  74:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 118              		.loc 1 74 0
+  68:main.c        ****     }
+  69:main.c        ****     
+  70:main.c        ****     /*      I2C Reading Status Register       */
+  71:main.c        ****     
+  72:main.c        ****     uint8_t status_register; 
+  73:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 118              		.loc 1 73 0
  119 005e 0DF12A02 		add	r2, sp, #42
  120 0062 2721     		movs	r1, #39
  121 0064 1820     		movs	r0, #24
  122 0066 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  123              	.LVL15:
-  75:main.c        ****                                         LIS3DH_STATUS_REG,
-  76:main.c        ****                                         &status_register);
-  77:main.c        ****     
-  78:main.c        ****     if (error == NO_ERROR)
- 124              		.loc 1 78 0
+  74:main.c        ****                                         LIS3DH_STATUS_REG,
+  75:main.c        ****                                         &status_register);
+  76:main.c        ****     
+  77:main.c        ****     if (error == NO_ERROR)
+ 124              		.loc 1 77 0
  125 006a 48B9     		cbnz	r0, .L7
-  79:main.c        ****     {
-  80:main.c        ****         sprintf(message, "STATUS REGISTER: 0x%02X\r\n", status_register);
- 126              		.loc 1 80 0
+  78:main.c        ****     {
+  79:main.c        ****         sprintf(message, "STATUS REGISTER: 0x%02X\r\n", status_register);
+ 126              		.loc 1 79 0
  127 006c 9DF82A20 		ldrb	r2, [sp, #42]	@ zero_extendqisi2
  128 0070 9049     		ldr	r1, .L23+20
  129 0072 0BA8     		add	r0, sp, #44
  130              	.LVL16:
  131 0074 FFF7FEFF 		bl	sprintf
  132              	.LVL17:
-  81:main.c        ****         UART_Debug_PutString(message); 
- 133              		.loc 1 81 0
+  80:main.c        ****         UART_Debug_PutString(message); 
+ 133              		.loc 1 80 0
  134 0078 0BA8     		add	r0, sp, #44
  135 007a FFF7FEFF 		bl	UART_Debug_PutString
  136              	.LVL18:
  137 007e 02E0     		b	.L8
  138              	.LVL19:
  139              	.L7:
-  82:main.c        ****     }
-  83:main.c        ****     else
-  84:main.c        ****     {
-  85:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read status register\r\n");   
- 140              		.loc 1 85 0
+  81:main.c        ****     }
+  82:main.c        ****     else
+  83:main.c        ****     {
+  84:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read status register\r\n");   
+ 140              		.loc 1 84 0
  141 0080 8D48     		ldr	r0, .L23+24
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 5
-
-
  142              	.LVL20:
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 5
+
+
  143 0082 FFF7FEFF 		bl	UART_Debug_PutString
  144              	.LVL21:
  145              	.L8:
-  86:main.c        ****     }
-  87:main.c        ****      
-  88:main.c        ****     /******************************************/
-  89:main.c        ****     /*        Read Control Register 1         */
-  90:main.c        ****     /******************************************/
-  91:main.c        ****     uint8_t ctrl_reg1; 
-  92:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 146              		.loc 1 92 0
+  85:main.c        ****     }
+  86:main.c        ****      
+  87:main.c        ****     /******************************************/
+  88:main.c        ****     /*        Read Control Register 1         */
+  89:main.c        ****     /******************************************/
+  90:main.c        ****     uint8_t ctrl_reg1; 
+  91:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 146              		.loc 1 91 0
  147 0086 0DF12902 		add	r2, sp, #41
  148 008a 2021     		movs	r1, #32
  149 008c 1820     		movs	r0, #24
  150 008e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  151              	.LVL22:
-  93:main.c        ****                                         LIS3DH_CTRL_REG1,
-  94:main.c        ****                                         &ctrl_reg1);
-  95:main.c        ****     
-  96:main.c        ****     if (error == NO_ERROR)
- 152              		.loc 1 96 0
+  92:main.c        ****                                         LIS3DH_CTRL_REG1,
+  93:main.c        ****                                         &ctrl_reg1);
+  94:main.c        ****     
+  95:main.c        ****     if (error == NO_ERROR)
+ 152              		.loc 1 95 0
  153 0092 48B9     		cbnz	r0, .L9
-  97:main.c        ****     {
-  98:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
- 154              		.loc 1 98 0
+  96:main.c        ****     {
+  97:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
+ 154              		.loc 1 97 0
  155 0094 9DF82920 		ldrb	r2, [sp, #41]	@ zero_extendqisi2
  156 0098 8849     		ldr	r1, .L23+28
  157 009a 0BA8     		add	r0, sp, #44
  158              	.LVL23:
  159 009c FFF7FEFF 		bl	sprintf
  160              	.LVL24:
-  99:main.c        ****         UART_Debug_PutString(message); 
- 161              		.loc 1 99 0
+  98:main.c        ****         UART_Debug_PutString(message); 
+ 161              		.loc 1 98 0
  162 00a0 0BA8     		add	r0, sp, #44
  163 00a2 FFF7FEFF 		bl	UART_Debug_PutString
  164              	.LVL25:
  165 00a6 02E0     		b	.L10
  166              	.LVL26:
  167              	.L9:
- 100:main.c        ****     }
- 101:main.c        ****     else
- 102:main.c        ****     {
- 103:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
- 168              		.loc 1 103 0
+  99:main.c        ****     }
+ 100:main.c        ****     else
+ 101:main.c        ****     {
+ 102:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
+ 168              		.loc 1 102 0
  169 00a8 8548     		ldr	r0, .L23+32
  170              	.LVL27:
  171 00aa FFF7FEFF 		bl	UART_Debug_PutString
  172              	.LVL28:
  173              	.L10:
- 104:main.c        ****     }
- 105:main.c        ****     
- 106:main.c        ****     /******************************************/
- 107:main.c        ****     /*            I2C Writing                 */
- 108:main.c        ****     /******************************************/
- 109:main.c        ****     
- 110:main.c        ****         
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 6
+ 103:main.c        ****     }
+ 104:main.c        ****     
+ 105:main.c        ****     /******************************************/
+ 106:main.c        ****     /*            I2C Writing                 */
+ 107:main.c        ****     /******************************************/
+ 108:main.c        ****     
+ 109:main.c        ****         
+ 110:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 6
 
 
- 111:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
- 174              		.loc 1 111 0
+ 174              		.loc 1 110 0
  175 00ae 8548     		ldr	r0, .L23+36
  176 00b0 FFF7FEFF 		bl	UART_Debug_PutString
  177              	.LVL29:
- 112:main.c        ****     
- 113:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1)//LP a 0
- 178              		.loc 1 113 0
+ 111:main.c        ****     
+ 112:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1)//LP a 0
+ 178              		.loc 1 112 0
  179 00b4 9DF82930 		ldrb	r3, [sp, #41]	@ zero_extendqisi2
  180 00b8 572B     		cmp	r3, #87
  181 00ba 14D0     		beq	.L11
- 114:main.c        ****     {
- 115:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1;
- 182              		.loc 1 115 0
+ 113:main.c        ****     {
+ 114:main.c        ****         /**
+ 115:main.c        ****         *   \brief Hex value to set the frequency of the accelerator in high resolution mode (the h
+ 116:main.c        ****         *   is set by leaving low the bit Lpen in the CTRL_REG1 and high the bit HR in the CTRL_REG
+ 117:main.c        ****         */
+ 118:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1;
+ 182              		.loc 1 118 0
  183 00bc 5722     		movs	r2, #87
  184 00be 8DF82920 		strb	r2, [sp, #41]
- 116:main.c        ****     
- 117:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
- 185              		.loc 1 117 0
+ 119:main.c        ****     
+ 120:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 185              		.loc 1 120 0
  186 00c2 2021     		movs	r1, #32
  187 00c4 1820     		movs	r0, #24
  188 00c6 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
  189              	.LVL30:
- 118:main.c        ****                                              LIS3DH_CTRL_REG1,
- 119:main.c        ****                                              ctrl_reg1);
- 120:main.c        ****     
- 121:main.c        ****         if (error == NO_ERROR)
- 190              		.loc 1 121 0
+ 121:main.c        ****                                              LIS3DH_CTRL_REG1,
+ 122:main.c        ****                                              ctrl_reg1);
+ 123:main.c        ****     
+ 124:main.c        ****         if (error == NO_ERROR)
+ 190              		.loc 1 124 0
  191 00ca 48B9     		cbnz	r0, .L12
- 122:main.c        ****         {
- 123:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
- 192              		.loc 1 123 0
+ 125:main.c        ****         {
+ 126:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
+ 192              		.loc 1 126 0
  193 00cc 9DF82920 		ldrb	r2, [sp, #41]	@ zero_extendqisi2
  194 00d0 7D49     		ldr	r1, .L23+40
  195 00d2 0BA8     		add	r0, sp, #44
  196              	.LVL31:
  197 00d4 FFF7FEFF 		bl	sprintf
  198              	.LVL32:
- 124:main.c        ****             UART_Debug_PutString(message); 
- 199              		.loc 1 124 0
+ 127:main.c        ****             UART_Debug_PutString(message); 
+ 199              		.loc 1 127 0
  200 00d8 0BA8     		add	r0, sp, #44
  201 00da FFF7FEFF 		bl	UART_Debug_PutString
  202              	.LVL33:
  203 00de 02E0     		b	.L11
  204              	.LVL34:
  205              	.L12:
- 125:main.c        ****         }
- 126:main.c        ****         else
- 127:main.c        ****         {
- 128:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
- 206              		.loc 1 128 0
+ 128:main.c        ****         }
+ 129:main.c        ****         else
+ 130:main.c        ****         {
+ 131:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
+ 206              		.loc 1 131 0
  207 00e0 7A48     		ldr	r0, .L23+44
  208              	.LVL35:
  209 00e2 FFF7FEFF 		bl	UART_Debug_PutString
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 7
+
+
  210              	.LVL36:
  211              	.L11:
- 129:main.c        ****         }
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 7
-
-
- 130:main.c        ****     }
- 131:main.c        ****     
- 132:main.c        ****     /******************************************/
- 133:main.c        ****     /*     Read Control Register 1 again      */
- 134:main.c        ****     /******************************************/
- 135:main.c        **** 
- 136:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 212              		.loc 1 136 0
+ 132:main.c        ****         }
+ 133:main.c        ****     }
+ 134:main.c        ****     
+ 135:main.c        ****     /******************************************/
+ 136:main.c        ****     /*     Read Control Register 1 again      */
+ 137:main.c        ****     /******************************************/
+ 138:main.c        **** 
+ 139:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 212              		.loc 1 139 0
  213 00e6 0DF12902 		add	r2, sp, #41
  214 00ea 2021     		movs	r1, #32
  215 00ec 1820     		movs	r0, #24
  216 00ee FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  217              	.LVL37:
- 137:main.c        ****                                         LIS3DH_CTRL_REG1,
- 138:main.c        ****                                         &ctrl_reg1);
- 139:main.c        ****     
- 140:main.c        ****     if (error == NO_ERROR)
- 218              		.loc 1 140 0
+ 140:main.c        ****                                         LIS3DH_CTRL_REG1,
+ 141:main.c        ****                                         &ctrl_reg1);
+ 142:main.c        ****     
+ 143:main.c        ****     if (error == NO_ERROR)
+ 218              		.loc 1 143 0
  219 00f2 48B9     		cbnz	r0, .L13
- 141:main.c        ****     {
- 142:main.c        ****         sprintf(message, "CONTROL REGISTER 1 after overwrite operation: 0x%02X\r\n", ctrl_reg1);
- 220              		.loc 1 142 0
+ 144:main.c        ****     {
+ 145:main.c        ****         sprintf(message, "CONTROL REGISTER 1 after overwrite operation: 0x%02X\r\n", ctrl_reg1);
+ 220              		.loc 1 145 0
  221 00f4 9DF82920 		ldrb	r2, [sp, #41]	@ zero_extendqisi2
  222 00f8 7549     		ldr	r1, .L23+48
  223 00fa 0BA8     		add	r0, sp, #44
  224              	.LVL38:
  225 00fc FFF7FEFF 		bl	sprintf
  226              	.LVL39:
- 143:main.c        ****         UART_Debug_PutString(message); 
- 227              		.loc 1 143 0
+ 146:main.c        ****         UART_Debug_PutString(message); 
+ 227              		.loc 1 146 0
  228 0100 0BA8     		add	r0, sp, #44
  229 0102 FFF7FEFF 		bl	UART_Debug_PutString
  230              	.LVL40:
  231 0106 02E0     		b	.L14
  232              	.LVL41:
  233              	.L13:
- 144:main.c        ****     }
- 145:main.c        ****     else
- 146:main.c        ****     {
- 147:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
- 234              		.loc 1 147 0
+ 147:main.c        ****     }
+ 148:main.c        ****     else
+ 149:main.c        ****     {
+ 150:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
+ 234              		.loc 1 150 0
  235 0108 6D48     		ldr	r0, .L23+32
  236              	.LVL42:
  237 010a FFF7FEFF 		bl	UART_Debug_PutString
  238              	.LVL43:
  239              	.L14:
- 148:main.c        ****     }
- 149:main.c        ****     
- 150:main.c        ****         /******************************************/
- 151:main.c        ****     /*     Read Control Register 4    */
- 152:main.c        ****     /******************************************/
- 153:main.c        ****     
- 154:main.c        ****     uint8_t ctrl_reg4;
- 155:main.c        **** 
- 156:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 240              		.loc 1 156 0
+ 151:main.c        ****     }
+ 152:main.c        ****     
+ 153:main.c        ****         /******************************************/
+ 154:main.c        ****     /*     Read Control Register 4    */
+ 155:main.c        ****     /******************************************/
+ 156:main.c        ****     
+ 157:main.c        ****     uint8_t ctrl_reg4;
+ 158:main.c        **** 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 8
+
+
+ 159:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 240              		.loc 1 159 0
  241 010e 0AAA     		add	r2, sp, #40
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 8
-
-
  242 0110 2321     		movs	r1, #35
  243 0112 1820     		movs	r0, #24
  244 0114 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  245              	.LVL44:
- 157:main.c        ****                                         LIS3DH_CTRL_REG4,
- 158:main.c        ****                                         &ctrl_reg4);
- 159:main.c        ****     
- 160:main.c        ****     if (error == NO_ERROR)
- 246              		.loc 1 160 0
+ 160:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 161:main.c        ****                                         &ctrl_reg4);
+ 162:main.c        ****     
+ 163:main.c        ****     if (error == NO_ERROR)
+ 246              		.loc 1 163 0
  247 0118 48B9     		cbnz	r0, .L15
- 161:main.c        ****     {
- 162:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
- 248              		.loc 1 162 0
+ 164:main.c        ****     {
+ 165:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
+ 248              		.loc 1 165 0
  249 011a 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
  250 011e 6D49     		ldr	r1, .L23+52
  251 0120 0BA8     		add	r0, sp, #44
  252              	.LVL45:
  253 0122 FFF7FEFF 		bl	sprintf
  254              	.LVL46:
- 163:main.c        ****         UART_Debug_PutString(message); 
- 255              		.loc 1 163 0
+ 166:main.c        ****         UART_Debug_PutString(message); 
+ 255              		.loc 1 166 0
  256 0126 0BA8     		add	r0, sp, #44
  257 0128 FFF7FEFF 		bl	UART_Debug_PutString
  258              	.LVL47:
  259 012c 02E0     		b	.L16
  260              	.LVL48:
  261              	.L15:
- 164:main.c        ****     }
- 165:main.c        ****     else
- 166:main.c        ****     {
- 167:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
- 262              		.loc 1 167 0
+ 167:main.c        ****     }
+ 168:main.c        ****     else
+ 169:main.c        ****     {
+ 170:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
+ 262              		.loc 1 170 0
  263 012e 6A48     		ldr	r0, .L23+56
  264              	.LVL49:
  265 0130 FFF7FEFF 		bl	UART_Debug_PutString
  266              	.LVL50:
  267              	.L16:
- 168:main.c        ****     }
- 169:main.c        ****     
- 170:main.c        ****     
- 171:main.c        ****     ctrl_reg4 = LIS3DH_CTRL_REG4_BDU_ACTIVE; // must be changed to the appropriate value, bit HR 0
- 268              		.loc 1 171 0
+ 171:main.c        ****     }
+ 172:main.c        ****     
+ 173:main.c        ****     
+ 174:main.c        ****     ctrl_reg4 = LIS3DH_CTRL_REG4_BDU_ACTIVE; 
+ 268              		.loc 1 174 0
  269 0134 9822     		movs	r2, #152
  270 0136 18AC     		add	r4, sp, #96
  271              	.LVL51:
  272 0138 04F8382D 		strb	r2, [r4, #-56]!
- 172:main.c        ****     
- 173:main.c        ****     error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
- 273              		.loc 1 173 0
+ 175:main.c        ****     
+ 176:main.c        ****     error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 273              		.loc 1 176 0
  274 013c 2321     		movs	r1, #35
  275 013e 1820     		movs	r0, #24
  276 0140 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
  277              	.LVL52:
- 174:main.c        ****                                          LIS3DH_CTRL_REG4,
- 175:main.c        ****                                          ctrl_reg4);
- 176:main.c        ****     
- 177:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 9
+ 177:main.c        ****                                          LIS3DH_CTRL_REG4,
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 9
 
 
- 278              		.loc 1 177 0
+ 178:main.c        ****                                          ctrl_reg4);
+ 179:main.c        ****     
+ 180:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 278              		.loc 1 180 0
  279 0144 2246     		mov	r2, r4
  280 0146 2321     		movs	r1, #35
  281 0148 1820     		movs	r0, #24
  282 014a FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  283              	.LVL53:
- 178:main.c        ****                                         LIS3DH_CTRL_REG4,
- 179:main.c        ****                                         &ctrl_reg4);
- 180:main.c        ****     
- 181:main.c        ****     
- 182:main.c        ****     if (error == NO_ERROR)
- 284              		.loc 1 182 0
+ 181:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 182:main.c        ****                                         &ctrl_reg4);
+ 183:main.c        ****     
+ 184:main.c        ****     
+ 185:main.c        ****     if (error == NO_ERROR)
+ 284              		.loc 1 185 0
  285 014e 48B9     		cbnz	r0, .L17
- 183:main.c        ****     {
- 184:main.c        ****         sprintf(message, "CONTROL REGISTER 4 after being updated: 0x%02X\r\n", ctrl_reg4);
- 286              		.loc 1 184 0
+ 186:main.c        ****     {
+ 187:main.c        ****         sprintf(message, "CONTROL REGISTER 4 after being updated: 0x%02X\r\n", ctrl_reg4);
+ 286              		.loc 1 187 0
  287 0150 9DF82820 		ldrb	r2, [sp, #40]	@ zero_extendqisi2
  288 0154 6149     		ldr	r1, .L23+60
  289 0156 0BA8     		add	r0, sp, #44
  290              	.LVL54:
  291 0158 FFF7FEFF 		bl	sprintf
  292              	.LVL55:
- 185:main.c        ****         UART_Debug_PutString(message); 
- 293              		.loc 1 185 0
+ 188:main.c        ****         UART_Debug_PutString(message); 
+ 293              		.loc 1 188 0
  294 015c 0BA8     		add	r0, sp, #44
  295 015e FFF7FEFF 		bl	UART_Debug_PutString
  296              	.LVL56:
  297 0162 02E0     		b	.L18
  298              	.LVL57:
  299              	.L17:
- 186:main.c        ****     }
- 187:main.c        ****     else
- 188:main.c        ****     {
- 189:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
- 300              		.loc 1 189 0
+ 189:main.c        ****     }
+ 190:main.c        ****     else
+ 191:main.c        ****     {
+ 192:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
+ 300              		.loc 1 192 0
  301 0164 5C48     		ldr	r0, .L23+56
  302              	.LVL58:
  303 0166 FFF7FEFF 		bl	UART_Debug_PutString
  304              	.LVL59:
  305              	.L18:
- 190:main.c        ****     }
- 191:main.c        ****     
- 192:main.c        ****      
- 193:main.c        ****     
- 194:main.c        ****     int16_t OutX;//used to merge the two uint8_t value from the array XYZData relative to the x dir
- 195:main.c        ****     int16_t OutY;//used to merge the two uint8_t value from the array XYZData relative to the y dir
- 196:main.c        ****     int16_t OutZ;//used to merge the two uint8_t value from the array XYZData relative to the z dir
- 197:main.c        ****     float32 OutXfloat;//used to save data of x acceleration with decimals
- 198:main.c        ****     float32 OutYfloat;//used to save data of y acceleration with decimals
- 199:main.c        ****     float32 OutZfloat;//used to save data of z acceleration with decimals
- 200:main.c        ****     uint8_t header = 0xA0;//header for UART comunication
- 201:main.c        ****     uint8_t footer = 0xC0;//header for UART comunication 
- 202:main.c        ****     uint8_t XYZData[6];//Array used to read data
- 203:main.c        ****     uint8_t register_count=5;//it is 5--> we need to read six value, from *(data) to  *(data+5)
- 204:main.c        ****     uint8_t OutArrayFloat[14];//array to be sent through UART
- 205:main.c        **** 
- 206:main.c        ****     OutArrayFloat[0] = header;
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 10
+ 193:main.c        ****     }
+ 194:main.c        ****     
+ 195:main.c        ****      
+ 196:main.c        ****     
+ 197:main.c        ****     int16_t OutX;//used to merge the two uint8_t value from the array XYZData relative to the x dir
+ 198:main.c        ****     int16_t OutY;//used to merge the two uint8_t value from the array XYZData relative to the y dir
+ 199:main.c        ****     int16_t OutZ;//used to merge the two uint8_t value from the array XYZData relative to the z dir
+ 200:main.c        ****     float32 OutXfloat;//used to save data of x acceleration with decimals
+ 201:main.c        ****     float32 OutYfloat;//used to save data of y acceleration with decimals
+ 202:main.c        ****     float32 OutZfloat;//used to save data of z acceleration with decimals
+ 203:main.c        ****     uint8_t header = 0xA0;//header for UART comunication
+ 204:main.c        ****     uint8_t footer = 0xC0;//tail for UART comunication 
+ 205:main.c        ****     uint8_t XYZData[6];//Array used to read data
+ 206:main.c        ****     uint8_t register_count=5;//it is 5--> we need to read six value, from *(data) to  *(data+5)
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 10
 
 
- 306              		.loc 1 206 0
+ 207:main.c        ****     uint8_t OutArrayFloat[14];//array to be sent through UART
+ 208:main.c        **** 
+ 209:main.c        ****     OutArrayFloat[0] = header;
+ 306              		.loc 1 209 0
  307 016a A023     		movs	r3, #160
  308 016c 8DF81030 		strb	r3, [sp, #16]
- 207:main.c        ****     OutArrayFloat[13] = footer;
- 309              		.loc 1 207 0
+ 210:main.c        ****     OutArrayFloat[13] = footer;
+ 309              		.loc 1 210 0
  310 0170 C023     		movs	r3, #192
  311 0172 8DF81D30 		strb	r3, [sp, #29]
  312              	.L19:
- 208:main.c        ****     
- 209:main.c        ****     uint8_t accx[sizeof(float)];//useful to send float as uint8_t
- 210:main.c        ****     uint8_t accy[sizeof(float)];//useful to send float as uint8_t
- 211:main.c        ****     uint8_t accz[sizeof(float)];//useful to send float as uint8_t
- 212:main.c        ****     
- 213:main.c        ****     for(;;)
- 214:main.c        ****     {
- 215:main.c        ****         //verify new Data is available using StatusReg information
- 216:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 313              		.loc 1 216 0
+ 211:main.c        ****     
+ 212:main.c        ****     uint8_t accx[sizeof(float)];//useful to send float as uint8_t
+ 213:main.c        ****     uint8_t accy[sizeof(float)];//useful to send float as uint8_t
+ 214:main.c        ****     uint8_t accz[sizeof(float)];//useful to send float as uint8_t
+ 215:main.c        ****     
+ 216:main.c        ****     for(;;)
+ 217:main.c        ****     {
+ 218:main.c        ****         //verify new Data is available using StatusReg information
+ 219:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 313              		.loc 1 219 0
  314 0176 0DF12A02 		add	r2, sp, #42
  315 017a 2721     		movs	r1, #39
  316 017c 1820     		movs	r0, #24
  317 017e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  318              	.LVL60:
- 217:main.c        ****                                         LIS3DH_STATUS_REG,
- 218:main.c        ****                                         &status_register);
- 219:main.c        ****         
- 220:main.c        ****         // only if there are new Data  available, we comunicate with the UART
- 221:main.c        ****         if(status_register & (1<<LIS3DH_STATUS_REG_ACTIVE_ZYXDA))
- 319              		.loc 1 221 0
+ 220:main.c        ****                                         LIS3DH_STATUS_REG,
+ 221:main.c        ****                                         &status_register);
+ 222:main.c        ****         
+ 223:main.c        ****         // only if there are new Data  available, we comunicate with the UART
+ 224:main.c        ****         if(status_register & (1<<LIS3DH_STATUS_REG_ACTIVE_ZYXDA))
+ 319              		.loc 1 224 0
  320 0182 9DF82A30 		ldrb	r3, [sp, #42]	@ zero_extendqisi2
  321 0186 13F0080F 		tst	r3, #8
  322 018a F4D0     		beq	.L19
- 222:main.c        ****         {
- 223:main.c        ****             
- 224:main.c        ****             //Use of multi-read function to read 6 consequent registers starting from OUT_X_L
- 225:main.c        ****             error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
- 323              		.loc 1 225 0
+ 225:main.c        ****         {
+ 226:main.c        ****             
+ 227:main.c        ****             //Use of multi-read function to read 6 consequent registers starting from OUT_X_L
+ 228:main.c        ****             error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+ 323              		.loc 1 228 0
  324 018c 08AB     		add	r3, sp, #32
  325 018e 0522     		movs	r2, #5
  326 0190 2821     		movs	r1, #40
  327 0192 1820     		movs	r0, #24
  328 0194 FFF7FEFF 		bl	I2C_Peripheral_ReadRegisterMulti
  329              	.LVL61:
- 226:main.c        ****                                             LIS3DH_OUT_X_L,
- 227:main.c        ****                                             register_count,
- 228:main.c        ****                                             &XYZData[0]);
- 229:main.c        ****            
- 230:main.c        ****             if(error == NO_ERROR)
- 330              		.loc 1 230 0
+ 229:main.c        ****                                             LIS3DH_OUT_X_L,
+ 230:main.c        ****                                             register_count,
+ 231:main.c        ****                                             &XYZData[0]);
+ 232:main.c        ****            
+ 233:main.c        ****             if(error == NO_ERROR)
+ 330              		.loc 1 233 0
  331 0198 0028     		cmp	r0, #0
  332 019a ECD1     		bne	.L19
- 231:main.c        ****             {
- 232:main.c        **** 
- 233:main.c        ****                 OutX = (int16)((XYZData[0] | (XYZData[1]<<8)))>>4;//merge data into a single int16 
- 333              		.loc 1 233 0
+ 234:main.c        ****             {
+ 235:main.c        ****                 //x direction
+ 236:main.c        **** 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 11
+
+
+ 237:main.c        ****                 OutX = (int16)((XYZData[0] | (XYZData[1]<<8)))>>4;//merge data into a single int16 
+ 333              		.loc 1 237 0
  334 019c 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
  335 01a0 9DF82100 		ldrb	r0, [sp, #33]	@ zero_extendqisi2
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 11
-
-
  336              	.LVL62:
  337 01a4 43EA0020 		orr	r0, r3, r0, lsl #8
  338              	.LVL63:
- 234:main.c        ****                 
- 235:main.c        ****                 OutXfloat=(float32)OutX;//cast float
- 339              		.loc 1 235 0
+ 238:main.c        ****                 
+ 239:main.c        ****                 OutXfloat=(float32)OutX;//cast float
+ 339              		.loc 1 239 0
  340 01a8 40F30B10 		sbfx	r0, r0, #4, #12
  341              	.LVL64:
  342 01ac FFF7FEFF 		bl	__aeabi_i2f
  343              	.LVL65:
- 236:main.c        ****                 
- 237:main.c        ****                 OutXfloat=(OutXfloat*CONSTANT_G)/512;//conversion in m/s^2
- 344              		.loc 1 237 0
+ 240:main.c        ****                 
+ 241:main.c        ****                 OutXfloat=(OutXfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
+ 344              		.loc 1 241 0
  345 01b0 FFF7FEFF 		bl	__aeabi_f2d
  346              	.LVL66:
  347 01b4 3AA3     		adr	r3, .L23
@@ -628,39 +632,36 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  356              	.LVL69:
  357 01ca 0546     		mov	r5, r0
  358              	.LVL70:
- 238:main.c        ****                 
- 239:main.c        ****                 //OutXfloat=roundf(OutXfloat*1000);//save three decimals
- 240:main.c        ****                 
- 241:main.c        ****                 
  242:main.c        ****                 
- 243:main.c        ****                 
- 244:main.c        ****                 OutY = (int16)((XYZData[2] | (XYZData[3]<<8)))>>4;//merge data into a single int16 
- 359              		.loc 1 244 0
+ 243:main.c        ****                 //y direction                
+ 244:main.c        ****                 
+ 245:main.c        ****                 OutY = (int16)((XYZData[2] | (XYZData[3]<<8)))>>4;//merge data into a single int16 
+ 359              		.loc 1 245 0
  360 01cc 9DF82230 		ldrb	r3, [sp, #34]	@ zero_extendqisi2
  361 01d0 9DF82300 		ldrb	r0, [sp, #35]	@ zero_extendqisi2
  362              	.LVL71:
  363 01d4 43EA0020 		orr	r0, r3, r0, lsl #8
  364              	.LVL72:
- 245:main.c        ****                 
- 246:main.c        ****                 OutYfloat=(float32)OutY;//cast float
- 365              		.loc 1 246 0
+ 246:main.c        ****                 
+ 247:main.c        ****                 OutYfloat=(float32)OutY;//cast float
+ 365              		.loc 1 247 0
  366 01d8 40F30B10 		sbfx	r0, r0, #4, #12
  367              	.LVL73:
  368 01dc FFF7FEFF 		bl	__aeabi_i2f
  369              	.LVL74:
- 247:main.c        ****                 
- 248:main.c        ****                 OutYfloat=(OutYfloat*CONSTANT_G)/512;//conversion in m/s^2
- 370              		.loc 1 248 0
+ 248:main.c        ****                 
+ 249:main.c        ****                 OutYfloat=(OutYfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
+ 370              		.loc 1 249 0
  371 01e0 FFF7FEFF 		bl	__aeabi_f2d
  372              	.LVL75:
  373 01e4 2EA3     		adr	r3, .L23
  374 01e6 D3E90023 		ldrd	r2, [r3]
  375 01ea FFF7FEFF 		bl	__aeabi_dmul
  376              	.LVL76:
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 12
+
+
  377 01ee 0022     		movs	r2, #0
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 12
-
-
  378 01f0 3B4B     		ldr	r3, .L23+64
  379 01f2 FFF7FEFF 		bl	__aeabi_dmul
  380              	.LVL77:
@@ -668,28 +669,26 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  382              	.LVL78:
  383 01fa 0446     		mov	r4, r0
  384              	.LVL79:
- 249:main.c        ****                  
- 250:main.c        ****                 //OutYfloat=roundf(OutYfloat*1000);//save three decimals
- 251:main.c        ****                 
+ 250:main.c        ****                 
+ 251:main.c        ****                 //z direction
  252:main.c        ****                 
- 253:main.c        ****                 
- 254:main.c        ****                 OutZ = (int16)((XYZData[4] | (XYZData[5]<<8)))>>4;//merge data into a single int16 
- 385              		.loc 1 254 0
+ 253:main.c        ****                 OutZ = (int16)((XYZData[4] | (XYZData[5]<<8)))>>4;//merge data into a single int16 
+ 385              		.loc 1 253 0
  386 01fc 9DF82430 		ldrb	r3, [sp, #36]	@ zero_extendqisi2
  387 0200 9DF82500 		ldrb	r0, [sp, #37]	@ zero_extendqisi2
  388              	.LVL80:
  389 0204 43EA0020 		orr	r0, r3, r0, lsl #8
  390              	.LVL81:
- 255:main.c        ****                 
- 256:main.c        ****                 OutZfloat=(float32)OutZ;//cast float
- 391              		.loc 1 256 0
+ 254:main.c        ****                 
+ 255:main.c        ****                 OutZfloat=(float32)OutZ;//cast float
+ 391              		.loc 1 255 0
  392 0208 40F30B10 		sbfx	r0, r0, #4, #12
  393              	.LVL82:
  394 020c FFF7FEFF 		bl	__aeabi_i2f
  395              	.LVL83:
- 257:main.c        ****        
- 258:main.c        ****                 OutZfloat=(OutZfloat*CONSTANT_G)/512;//conversion in m/s^2
- 396              		.loc 1 258 0
+ 256:main.c        ****        
+ 257:main.c        ****                 OutZfloat=(OutZfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
+ 396              		.loc 1 257 0
  397 0210 FFF7FEFF 		bl	__aeabi_f2d
  398              	.LVL84:
  399 0214 22A3     		adr	r3, .L23
@@ -702,85 +701,89 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  406              	.LVL86:
  407 0226 FFF7FEFF 		bl	__aeabi_d2f
  408              	.LVL87:
+ 258:main.c        ****                 
  259:main.c        ****                 
- 260:main.c        ****                 //OutZfloat=roundf(OutZfloat*1000);//save three decimals
- 261:main.c        ****                 
- 262:main.c        ****                  
- 263:main.c        ****                 
- 264:main.c        ****                 *(float*)(accx)=OutXfloat;//save the float into the uint8_t through the pointer
- 409              		.loc 1 264 0
+ 260:main.c        ****                 /* 
+ 261:main.c        ****                 *   We could multiply the float by 1000 or more to save at least 3 decimals and the
+ 262:main.c        ****                 *   then we can take advantage of the scale in the variable settings of the bridge 
+ 263:main.c        ****                 *   decimals
+ 264:main.c        ****                 *   BUT I CHOOSE A DIFFERENT WAY-->WITH THE FOLLOWING CODE,WE ARE ABLE TO SEND FLOA
+ 265:main.c        ****                 *   BRIDGE CONTROL PANEL DIRECTLY WITHOUT USING THE SCALE IN THE VARIABLE SETTINGS
+ 266:main.c        ****                 */
+ 267:main.c        ****                 *(float*)(accx)=OutXfloat;//save the float into the uint8_t through the pointer: ta
+ 409              		.loc 1 267 0
  410 022a 0395     		str	r5, [sp, #12]	@ float
- 265:main.c        ****                 *(float*)(accy)=OutYfloat;//save the float into the uint8_t through the pointer
- 411              		.loc 1 265 0
+ 268:main.c        ****                 *(float*)(accy)=OutYfloat;//save the float into the uint8_t through the pointer: ta
+ 411              		.loc 1 268 0
  412 022c 0294     		str	r4, [sp, #8]	@ float
- 266:main.c        ****                 *(float*)(accz)=OutZfloat;//save the float into the uint8_t through the pointer
- 413              		.loc 1 266 0
+ 269:main.c        ****                 *(float*)(accz)=OutZfloat;//save the float into the uint8_t through the pointer: ta
+ 413              		.loc 1 269 0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 13
+
+
  414 022e 0190     		str	r0, [sp, #4]	@ float
- 267:main.c        ****                 
- 268:main.c        **** 
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 13
-
-
- 269:main.c        ****                 OutArrayFloat[1] = accx[0]  ;//copy of the LSB of the acc in the x direction into t
- 415              		.loc 1 269 0
+ 270:main.c        ****                 
+ 271:main.c        **** 
+ 272:main.c        ****                 OutArrayFloat[1] = accx[0]  ;//copy of the LSB of the acc in the x direction into t
+ 415              		.loc 1 272 0
  416 0230 9DF80C30 		ldrb	r3, [sp, #12]	@ zero_extendqisi2
  417 0234 8DF81130 		strb	r3, [sp, #17]
- 270:main.c        ****                 OutArrayFloat[2] = accx[1] ;
- 418              		.loc 1 270 0
+ 273:main.c        ****                 OutArrayFloat[2] = accx[1] ;
+ 418              		.loc 1 273 0
  419 0238 9DF80D30 		ldrb	r3, [sp, #13]	@ zero_extendqisi2
  420 023c 8DF81230 		strb	r3, [sp, #18]
- 271:main.c        ****                 OutArrayFloat[3] = accx[2] ;
- 421              		.loc 1 271 0
+ 274:main.c        ****                 OutArrayFloat[3] = accx[2] ;
+ 421              		.loc 1 274 0
  422 0240 9DF80E30 		ldrb	r3, [sp, #14]	@ zero_extendqisi2
  423 0244 8DF81330 		strb	r3, [sp, #19]
- 272:main.c        ****                 OutArrayFloat[4] = accx[3] ;//copy of the MSB of the acc in the x direction into th
- 424              		.loc 1 272 0
+ 275:main.c        ****                 OutArrayFloat[4] = accx[3] ;//copy of the MSB of the acc in the x direction into th
+ 424              		.loc 1 275 0
  425 0248 9DF80F30 		ldrb	r3, [sp, #15]	@ zero_extendqisi2
  426 024c 8DF81430 		strb	r3, [sp, #20]
- 273:main.c        ****                 OutArrayFloat[5] = accy[0] ;//copy of the LSB of the acc in the y direction into th
- 427              		.loc 1 273 0
+ 276:main.c        ****                 OutArrayFloat[5] = accy[0] ;//copy of the LSB of the acc in the y direction into th
+ 427              		.loc 1 276 0
  428 0250 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
  429 0254 8DF81530 		strb	r3, [sp, #21]
- 274:main.c        ****                 OutArrayFloat[6] = accy[1] ;
- 430              		.loc 1 274 0
+ 277:main.c        ****                 OutArrayFloat[6] = accy[1] ;
+ 430              		.loc 1 277 0
  431 0258 9DF80930 		ldrb	r3, [sp, #9]	@ zero_extendqisi2
  432 025c 8DF81630 		strb	r3, [sp, #22]
- 275:main.c        ****                 OutArrayFloat[7] = accy[2] ;
- 433              		.loc 1 275 0
+ 278:main.c        ****                 OutArrayFloat[7] = accy[2] ;
+ 433              		.loc 1 278 0
  434 0260 9DF80A30 		ldrb	r3, [sp, #10]	@ zero_extendqisi2
  435 0264 8DF81730 		strb	r3, [sp, #23]
- 276:main.c        ****                 OutArrayFloat[8] = accy[3] ;//copy of the MSB of the acc in the y direction into th
- 436              		.loc 1 276 0
+ 279:main.c        ****                 OutArrayFloat[8] = accy[3] ;//copy of the MSB of the acc in the y direction into th
+ 436              		.loc 1 279 0
  437 0268 9DF80B30 		ldrb	r3, [sp, #11]	@ zero_extendqisi2
  438 026c 8DF81830 		strb	r3, [sp, #24]
- 277:main.c        ****                 OutArrayFloat[9] = accz[0] ;//copy of the LSB of the acc in the z direction into th
- 439              		.loc 1 277 0
+ 280:main.c        ****                 OutArrayFloat[9] = accz[0] ;//copy of the LSB of the acc in the z direction into th
+ 439              		.loc 1 280 0
  440 0270 9DF80430 		ldrb	r3, [sp, #4]	@ zero_extendqisi2
  441 0274 8DF81930 		strb	r3, [sp, #25]
- 278:main.c        ****                 OutArrayFloat[10] =accz[1] ;
- 442              		.loc 1 278 0
+ 281:main.c        ****                 OutArrayFloat[10] =accz[1] ;
+ 442              		.loc 1 281 0
  443 0278 9DF80530 		ldrb	r3, [sp, #5]	@ zero_extendqisi2
  444 027c 8DF81A30 		strb	r3, [sp, #26]
- 279:main.c        ****                 OutArrayFloat[11] =accz[2] ;
- 445              		.loc 1 279 0
+ 282:main.c        ****                 OutArrayFloat[11] =accz[2] ;
+ 445              		.loc 1 282 0
  446 0280 9DF80630 		ldrb	r3, [sp, #6]	@ zero_extendqisi2
  447 0284 8DF81B30 		strb	r3, [sp, #27]
- 280:main.c        ****                 OutArrayFloat[12] =accz[3] ;//copy of the MSB of the acc in the z direction into th
- 448              		.loc 1 280 0
+ 283:main.c        ****                 OutArrayFloat[12] =accz[3] ;//copy of the MSB of the acc in the z direction into th
+ 448              		.loc 1 283 0
  449 0288 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
  450 028c 8DF81C30 		strb	r3, [sp, #28]
- 281:main.c        ****                 UART_Debug_PutArray(OutArrayFloat, 14);
- 451              		.loc 1 281 0
+ 284:main.c        ****                 UART_Debug_PutArray(OutArrayFloat, 14);
+ 451              		.loc 1 284 0
  452 0290 0E21     		movs	r1, #14
  453 0292 04A8     		add	r0, sp, #16
  454              	.LVL88:
  455 0294 FFF7FEFF 		bl	UART_Debug_PutArray
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 14
+
+
  456              	.LVL89:
  457 0298 6DE7     		b	.L19
  458              	.L24:
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 14
-
-
  459 029a 00BFAFF3 		.align	3
  459      0080
  460              	.L23:
@@ -835,12 +838,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  493 0086 0000     		.space	2
  494              	.LC4:
  495 0088 4572726F 		.ascii	"Error occurred during I2C comm to read status regis"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 15
+
+
  495      72206F63 
  495      63757272 
  495      65642064 
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 15
-
-
  495      7572696E 
  496 00bb 7465720D 		.ascii	"ter\015\012\000"
  496      0A00
@@ -895,12 +898,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  518 01e7 00       		.space	1
  519              	.LC11:
  520 01e8 434F4E54 		.ascii	"CONTROL REGISTER 4: 0x%02X\015\012\000"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 16
+
+
  520      524F4C20 
  520      52454749 
  520      53544552 
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 16
-
-
  520      20343A20 
  521 0205 000000   		.space	3
  522              	.LC12:
@@ -955,12 +958,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  562 0033 37000000 		.4byte	0x37
  563 0037 02       		.uleb128 0x2
  564 0038 01       		.byte	0x1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 17
+
+
  565 0039 08       		.byte	0x8
  566 003a 07010000 		.4byte	.LASF1
  567 003e 03       		.uleb128 0x3
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 17
-
-
  568 003f 27020000 		.4byte	.LASF3
  569 0043 02       		.byte	0x2
  570 0044 29       		.byte	0x29
@@ -1015,12 +1018,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  619 00a2 03       		.uleb128 0x3
  620 00a3 A5000000 		.4byte	.LASF14
  621 00a7 03       		.byte	0x3
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 18
+
+
  622 00a8 2C       		.byte	0x2c
  623 00a9 57000000 		.4byte	0x57
  624 00ad 05       		.uleb128 0x5
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 18
-
-
  625 00ae A3010000 		.4byte	.LASF15
  626 00b2 04       		.byte	0x4
  627 00b3 E801     		.2byte	0x1e8
@@ -1071,20 +1074,20 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  672 010c 08       		.uleb128 0x8
  673 010d 1A020000 		.4byte	.LASF58
  674 0111 01       		.byte	0x1
- 675 0112 1B       		.byte	0x1b
+ 675 0112 1A       		.byte	0x1a
  676 0113 7E000000 		.4byte	0x7e
  677 0117 00000000 		.4byte	.LFB64
  678 011b E4020000 		.4byte	.LFE64-.LFB64
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 19
+
+
  679 011f 01       		.uleb128 0x1
  680 0120 9C       		.byte	0x9c
  681 0121 47060000 		.4byte	0x647
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 19
-
-
  682 0125 09       		.uleb128 0x9
  683 0126 00000000 		.4byte	.LASF25
  684 012a 01       		.byte	0x1
- 685 012b 26       		.byte	0x26
+ 685 012b 25       		.byte	0x25
  686 012c 47060000 		.4byte	0x647
  687 0130 03       		.uleb128 0x3
  688 0131 91       		.byte	0x91
@@ -1092,7 +1095,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  690 0134 09       		.uleb128 0x9
  691 0135 4F030000 		.4byte	.LASF26
  692 0139 01       		.byte	0x1
- 693 013a 39       		.byte	0x39
+ 693 013a 38       		.byte	0x38
  694 013b 8C000000 		.4byte	0x8c
  695 013f 03       		.uleb128 0x3
  696 0140 91       		.byte	0x91
@@ -1100,13 +1103,13 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  698 0143 0A       		.uleb128 0xa
  699 0144 AD020000 		.4byte	.LASF27
  700 0148 01       		.byte	0x1
- 701 0149 3A       		.byte	0x3a
+ 701 0149 39       		.byte	0x39
  702 014a F3000000 		.4byte	0xf3
  703 014e 00000000 		.4byte	.LLST0
  704 0152 09       		.uleb128 0x9
  705 0153 27030000 		.4byte	.LASF28
  706 0157 01       		.byte	0x1
- 707 0158 49       		.byte	0x49
+ 707 0158 48       		.byte	0x48
  708 0159 8C000000 		.4byte	0x8c
  709 015d 03       		.uleb128 0x3
  710 015e 91       		.byte	0x91
@@ -1114,7 +1117,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  712 0161 09       		.uleb128 0x9
  713 0162 31020000 		.4byte	.LASF29
  714 0166 01       		.byte	0x1
- 715 0167 5B       		.byte	0x5b
+ 715 0167 5A       		.byte	0x5a
  716 0168 8C000000 		.4byte	0x8c
  717 016c 03       		.uleb128 0x3
  718 016d 91       		.byte	0x91
@@ -1122,7 +1125,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  720 0170 09       		.uleb128 0x9
  721 0171 45020000 		.4byte	.LASF30
  722 0175 01       		.byte	0x1
- 723 0176 9A       		.byte	0x9a
+ 723 0176 9D       		.byte	0x9d
  724 0177 8C000000 		.4byte	0x8c
  725 017b 03       		.uleb128 0x3
  726 017c 91       		.byte	0x91
@@ -1130,58 +1133,58 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  728 017f 0A       		.uleb128 0xa
  729 0180 95020000 		.4byte	.LASF31
  730 0184 01       		.byte	0x1
- 731 0185 C2       		.byte	0xc2
+ 731 0185 C5       		.byte	0xc5
  732 0186 97000000 		.4byte	0x97
  733 018a AD000000 		.4byte	.LLST1
  734 018e 0A       		.uleb128 0xa
  735 018f 9A020000 		.4byte	.LASF32
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 20
+
+
  736 0193 01       		.byte	0x1
- 737 0194 C3       		.byte	0xc3
+ 737 0194 C6       		.byte	0xc6
  738 0195 97000000 		.4byte	0x97
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 20
-
-
  739 0199 E6000000 		.4byte	.LLST2
  740 019d 0A       		.uleb128 0xa
  741 019e 9F020000 		.4byte	.LASF33
  742 01a2 01       		.byte	0x1
- 743 01a3 C4       		.byte	0xc4
+ 743 01a3 C7       		.byte	0xc7
  744 01a4 97000000 		.4byte	0x97
  745 01a8 1F010000 		.4byte	.LLST3
  746 01ac 0A       		.uleb128 0xa
  747 01ad DE020000 		.4byte	.LASF34
  748 01b1 01       		.byte	0x1
- 749 01b2 C5       		.byte	0xc5
+ 749 01b2 C8       		.byte	0xc8
  750 01b3 B9000000 		.4byte	0xb9
  751 01b7 58010000 		.4byte	.LLST4
  752 01bb 0A       		.uleb128 0xa
  753 01bc 81030000 		.4byte	.LASF35
  754 01c0 01       		.byte	0x1
- 755 01c1 C6       		.byte	0xc6
+ 755 01c1 C9       		.byte	0xc9
  756 01c2 B9000000 		.4byte	0xb9
  757 01c6 81010000 		.4byte	.LLST5
  758 01ca 0A       		.uleb128 0xa
  759 01cb 0E030000 		.4byte	.LASF36
  760 01cf 01       		.byte	0x1
- 761 01d0 C7       		.byte	0xc7
+ 761 01d0 CA       		.byte	0xca
  762 01d1 B9000000 		.4byte	0xb9
  763 01d5 AA010000 		.4byte	.LLST6
  764 01d9 0B       		.uleb128 0xb
  765 01da 08000000 		.4byte	.LASF37
  766 01de 01       		.byte	0x1
- 767 01df C8       		.byte	0xc8
+ 767 01df CB       		.byte	0xcb
  768 01e0 8C000000 		.4byte	0x8c
  769 01e4 A07F     		.sleb128 -96
  770 01e6 0B       		.uleb128 0xb
  771 01e7 CE010000 		.4byte	.LASF38
  772 01eb 01       		.byte	0x1
- 773 01ec C9       		.byte	0xc9
+ 773 01ec CC       		.byte	0xcc
  774 01ed 8C000000 		.4byte	0x8c
  775 01f1 40       		.sleb128 -64
  776 01f2 09       		.uleb128 0x9
  777 01f3 59000000 		.4byte	.LASF39
  778 01f7 01       		.byte	0x1
- 779 01f8 CA       		.byte	0xca
+ 779 01f8 CD       		.byte	0xcd
  780 01f9 57060000 		.4byte	0x657
  781 01fd 03       		.uleb128 0x3
  782 01fe 91       		.byte	0x91
@@ -1189,24 +1192,24 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  784 0201 0C       		.uleb128 0xc
  785 0202 96000000 		.4byte	.LASF40
  786 0206 01       		.byte	0x1
- 787 0207 CB       		.byte	0xcb
+ 787 0207 CE       		.byte	0xce
  788 0208 8C000000 		.4byte	0x8c
  789 020c 05       		.byte	0x5
  790 020d 09       		.uleb128 0x9
  791 020e 6A000000 		.4byte	.LASF41
  792 0212 01       		.byte	0x1
- 793 0213 CC       		.byte	0xcc
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 21
+
+
+ 793 0213 CF       		.byte	0xcf
  794 0214 67060000 		.4byte	0x667
  795 0218 03       		.uleb128 0x3
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 21
-
-
  796 0219 91       		.byte	0x91
  797 021a A07F     		.sleb128 -96
  798 021c 09       		.uleb128 0x9
  799 021d 3B020000 		.4byte	.LASF42
  800 0221 01       		.byte	0x1
- 801 0222 D1       		.byte	0xd1
+ 801 0222 D4       		.byte	0xd4
  802 0223 77060000 		.4byte	0x677
  803 0227 03       		.uleb128 0x3
  804 0228 91       		.byte	0x91
@@ -1214,7 +1217,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  806 022b 09       		.uleb128 0x9
  807 022c 40020000 		.4byte	.LASF43
  808 0230 01       		.byte	0x1
- 809 0231 D2       		.byte	0xd2
+ 809 0231 D5       		.byte	0xd5
  810 0232 77060000 		.4byte	0x677
  811 0236 03       		.uleb128 0x3
  812 0237 91       		.byte	0x91
@@ -1222,7 +1225,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  814 023a 09       		.uleb128 0x9
  815 023b 5C020000 		.4byte	.LASF44
  816 023f 01       		.byte	0x1
- 817 0240 D3       		.byte	0xd3
+ 817 0240 D6       		.byte	0xd6
  818 0241 77060000 		.4byte	0x677
  819 0245 03       		.uleb128 0x3
  820 0246 91       		.byte	0x91
@@ -1234,7 +1237,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  826 0256 0E       		.uleb128 0xe
  827 0257 6900     		.ascii	"i\000"
  828 0259 01       		.byte	0x1
- 829 025a 29       		.byte	0x29
+ 829 025a 28       		.byte	0x28
  830 025b 7E000000 		.4byte	0x7e
  831 025f D5010000 		.4byte	.LLST7
  832 0263 0F       		.uleb128 0xf
@@ -1255,12 +1258,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  847 0284 10       		.uleb128 0x10
  848 0285 01       		.uleb128 0x1
  849 0286 50       		.byte	0x50
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 22
+
+
  850 0287 03       		.uleb128 0x3
  851 0288 91       		.byte	0x91
  852 0289 BC7F     		.sleb128 -68
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 22
-
-
  853 028b 10       		.uleb128 0x10
  854 028c 01       		.uleb128 0x1
  855 028d 51       		.byte	0x51
@@ -1315,12 +1318,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  904 02e6 51       		.byte	0x51
  905 02e7 01       		.uleb128 0x1
  906 02e8 3F       		.byte	0x3f
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 23
+
+
  907 02e9 10       		.uleb128 0x10
  908 02ea 01       		.uleb128 0x1
  909 02eb 52       		.byte	0x52
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 23
-
-
  910 02ec 03       		.uleb128 0x3
  911 02ed 91       		.byte	0x91
  912 02ee BB7F     		.sleb128 -69
@@ -1375,12 +1378,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  961 034c 48       		.byte	0x48
  962 034d 10       		.uleb128 0x10
  963 034e 01       		.uleb128 0x1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 24
+
+
  964 034f 51       		.byte	0x51
  965 0350 02       		.uleb128 0x2
  966 0351 08       		.byte	0x8
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 24
-
-
  967 0352 27       		.byte	0x27
  968 0353 10       		.uleb128 0x10
  969 0354 01       		.uleb128 0x1
@@ -1435,12 +1438,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1018 03b2 10       		.uleb128 0x10
  1019 03b3 01       		.uleb128 0x1
  1020 03b4 50       		.byte	0x50
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 25
+
+
  1021 03b5 01       		.uleb128 0x1
  1022 03b6 48       		.byte	0x48
  1023 03b7 10       		.uleb128 0x10
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 25
-
-
  1024 03b8 01       		.uleb128 0x1
  1025 03b9 51       		.byte	0x51
  1026 03ba 02       		.uleb128 0x2
@@ -1495,12 +1498,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1075 040f 0F       		.uleb128 0xf
  1076 0410 B4000000 		.4byte	.LVL29
  1077 0414 AE060000 		.4byte	0x6ae
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 26
+
+
  1078 0418 26040000 		.4byte	0x426
  1079 041c 10       		.uleb128 0x10
  1080 041d 01       		.uleb128 0x1
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 26
-
-
  1081 041e 50       		.byte	0x50
  1082 041f 05       		.uleb128 0x5
  1083 0420 03       		.byte	0x3
@@ -1555,12 +1558,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1132 0473 03       		.uleb128 0x3
  1133 0474 91       		.byte	0x91
  1134 0475 BC7F     		.sleb128 -68
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 27
+
+
  1135 0477 00       		.byte	0
  1136 0478 0F       		.uleb128 0xf
  1137 0479 E6000000 		.4byte	.LVL36
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 27
-
-
  1138 047d AE060000 		.4byte	0x6ae
  1139 0481 8F040000 		.4byte	0x48f
  1140 0485 10       		.uleb128 0x10
@@ -1615,12 +1618,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1189 04d6 E2040000 		.4byte	0x4e2
  1190 04da 10       		.uleb128 0x10
  1191 04db 01       		.uleb128 0x1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 28
+
+
  1192 04dc 50       		.byte	0x50
  1193 04dd 03       		.uleb128 0x3
  1194 04de 91       		.byte	0x91
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 28
-
-
  1195 04df BC7F     		.sleb128 -68
  1196 04e1 00       		.byte	0
  1197 04e2 0F       		.uleb128 0xf
@@ -1675,12 +1678,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1246 0536 00       		.byte	0
  1247 0537 0F       		.uleb128 0xf
  1248 0538 2C010000 		.4byte	.LVL47
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 29
+
+
  1249 053c AE060000 		.4byte	0x6ae
  1250 0540 4C050000 		.4byte	0x54c
  1251 0544 10       		.uleb128 0x10
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 29
-
-
  1252 0545 01       		.uleb128 0x1
  1253 0546 50       		.byte	0x50
  1254 0547 03       		.uleb128 0x3
@@ -1735,12 +1738,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1303 0597 02       		.uleb128 0x2
  1304 0598 08       		.byte	0x8
  1305 0599 23       		.byte	0x23
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 30
+
+
  1306 059a 10       		.uleb128 0x10
  1307 059b 01       		.uleb128 0x1
  1308 059c 52       		.byte	0x52
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 30
-
-
  1309 059d 02       		.uleb128 0x2
  1310 059e 74       		.byte	0x74
  1311 059f 00       		.sleb128 0
@@ -1795,12 +1798,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1360 05fc 48       		.byte	0x48
  1361 05fd 10       		.uleb128 0x10
  1362 05fe 01       		.uleb128 0x1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 31
+
+
  1363 05ff 51       		.byte	0x51
  1364 0600 02       		.uleb128 0x2
  1365 0601 08       		.byte	0x8
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 31
-
-
  1366 0602 27       		.byte	0x27
  1367 0603 10       		.uleb128 0x10
  1368 0604 01       		.uleb128 0x1
@@ -1855,12 +1858,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1417 0647 13       		.uleb128 0x13
  1418 0648 D3000000 		.4byte	0xd3
  1419 064c 57060000 		.4byte	0x657
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 32
+
+
  1420 0650 14       		.uleb128 0x14
  1421 0651 05010000 		.4byte	0x105
  1422 0655 31       		.byte	0x31
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 32
-
-
  1423 0656 00       		.byte	0
  1424 0657 13       		.uleb128 0x13
  1425 0658 8C000000 		.4byte	0x8c
@@ -1915,12 +1918,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1474 06c9 C1020000 		.4byte	.LASF49
  1475 06cd 08       		.byte	0x8
  1476 06ce 54       		.byte	0x54
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 33
+
+
  1477 06cf 17       		.uleb128 0x17
  1478 06d0 64030000 		.4byte	.LASF50
  1479 06d4 64030000 		.4byte	.LASF50
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 33
-
-
  1480 06d8 09       		.byte	0x9
  1481 06d9 76       		.byte	0x76
  1482 06da 17       		.uleb128 0x17
@@ -1975,12 +1978,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1531 001a 03       		.uleb128 0x3
  1532 001b 0E       		.uleb128 0xe
  1533 001c 00       		.byte	0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 34
+
+
  1534 001d 00       		.byte	0
  1535 001e 03       		.uleb128 0x3
  1536 001f 16       		.uleb128 0x16
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 34
-
-
  1537 0020 00       		.byte	0
  1538 0021 03       		.uleb128 0x3
  1539 0022 0E       		.uleb128 0xe
@@ -2035,12 +2038,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1588 0053 28       		.uleb128 0x28
  1589 0054 00       		.byte	0
  1590 0055 03       		.uleb128 0x3
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 35
+
+
  1591 0056 0E       		.uleb128 0xe
  1592 0057 1C       		.uleb128 0x1c
  1593 0058 0B       		.uleb128 0xb
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 35
-
-
  1594 0059 00       		.byte	0
  1595 005a 00       		.byte	0
  1596 005b 08       		.uleb128 0x8
@@ -2095,12 +2098,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1645 008e 3A       		.uleb128 0x3a
  1646 008f 0B       		.uleb128 0xb
  1647 0090 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 36
+
+
  1648 0091 0B       		.uleb128 0xb
  1649 0092 49       		.uleb128 0x49
  1650 0093 13       		.uleb128 0x13
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 36
-
-
  1651 0094 02       		.uleb128 0x2
  1652 0095 17       		.uleb128 0x17
  1653 0096 00       		.byte	0
@@ -2155,12 +2158,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1702 00c7 0B       		.uleb128 0xb
  1703 00c8 3B       		.uleb128 0x3b
  1704 00c9 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 37
+
+
  1705 00ca 49       		.uleb128 0x49
  1706 00cb 13       		.uleb128 0x13
  1707 00cc 02       		.uleb128 0x2
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 37
-
-
  1708 00cd 17       		.uleb128 0x17
  1709 00ce 00       		.byte	0
  1710 00cf 00       		.byte	0
@@ -2215,12 +2218,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1759 0109 21       		.uleb128 0x21
  1760 010a 00       		.byte	0
  1761 010b 49       		.uleb128 0x49
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 38
+
+
  1762 010c 13       		.uleb128 0x13
  1763 010d 2F       		.uleb128 0x2f
  1764 010e 0B       		.uleb128 0xb
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 38
-
-
  1765 010f 00       		.byte	0
  1766 0110 00       		.byte	0
  1767 0111 15       		.uleb128 0x15
@@ -2275,12 +2278,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1816 000b 58000000 		.4byte	.LVL12
  1817 000f 5A000000 		.4byte	.LVL13
  1818 0013 0100     		.2byte	0x1
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 39
+
+
  1819 0015 50       		.byte	0x50
  1820 0016 6A000000 		.4byte	.LVL15
  1821 001a 74000000 		.4byte	.LVL16
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 39
-
-
  1822 001e 0100     		.2byte	0x1
  1823 0020 50       		.byte	0x50
  1824 0021 80000000 		.4byte	.LVL19
@@ -2335,12 +2338,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1873 00a9 00000000 		.4byte	0
  1874              	.LLST1:
  1875 00ad A8010000 		.4byte	.LVL63
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 40
+
+
  1876 00b1 AC010000 		.4byte	.LVL64
  1877 00b5 0900     		.2byte	0x9
  1878 00b7 70       		.byte	0x70
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 40
-
-
  1879 00b8 00       		.sleb128 0
  1880 00b9 09       		.byte	0x9
  1881 00ba F4       		.byte	0xf4
@@ -2395,12 +2398,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1930 0107 01       		.byte	0x1
  1931 0108 08       		.byte	0x8
  1932 0109 FF       		.byte	0xff
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 41
+
+
  1933 010a 1A       		.byte	0x1a
  1934 010b 38       		.byte	0x38
  1935 010c 24       		.byte	0x24
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 41
-
-
  1936 010d 73       		.byte	0x73
  1937 010e 00       		.sleb128 0
  1938 010f 21       		.byte	0x21
@@ -2455,12 +2458,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  1987 015c B3010000 		.4byte	.LVL66-1
  1988 0160 0100     		.2byte	0x1
  1989 0162 50       		.byte	0x50
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 42
+
+
  1990 0163 CC010000 		.4byte	.LVL70
  1991 0167 D4010000 		.4byte	.LVL71
  1992 016b 0100     		.2byte	0x1
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 42
-
-
  1993 016d 50       		.byte	0x50
  1994 016e D4010000 		.4byte	.LVL71
  1995 0172 E4020000 		.4byte	.LFE64
@@ -2515,12 +2518,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2044 0000 1C000000 		.4byte	0x1c
  2045 0004 0200     		.2byte	0x2
  2046 0006 00000000 		.4byte	.Ldebug_info0
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 43
+
+
  2047 000a 04       		.byte	0x4
  2048 000b 00       		.byte	0
  2049 000c 0000     		.2byte	0
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 43
-
-
  2050 000e 0000     		.2byte	0
  2051 0010 00000000 		.4byte	.LFB64
  2052 0014 E4020000 		.4byte	.LFE64-.LFB64
@@ -2534,7 +2537,7 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2060 000c 00000000 		.4byte	0
  2061              		.section	.debug_line,"",%progbits
  2062              	.Ldebug_line0:
- 2063 0000 77020000 		.section	.debug_str,"MS",%progbits,1
+ 2063 0000 79020000 		.section	.debug_str,"MS",%progbits,1
  2063      0200FD01 
  2063      00000201 
  2063      FB0E0D00 
@@ -2575,12 +2578,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2080              	.LASF41:
  2081 006a 4F757441 		.ascii	"OutArrayFloat\000"
  2081      72726179 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 44
+
+
  2081      466C6F61 
  2081      7400
  2082              	.LASF54:
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 44
-
-
  2083 0078 55415254 		.ascii	"UART_Debug_PutArray\000"
  2083      5F446562 
  2083      75675F50 
@@ -2635,12 +2638,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2100      74696F6E 
  2101              	.LASF15:
  2102 01a3 696E7431 		.ascii	"int16\000"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 45
+
+
  2102      3600
  2103              	.LASF8:
  2104 01a9 6C6F6E67 		.ascii	"long unsigned int\000"
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 45
-
-
  2104      20756E73 
  2104      69676E65 
  2104      6420696E 
@@ -2695,12 +2698,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2128      3400
  2129              	.LASF11:
  2130 024f 756E7369 		.ascii	"unsigned int\000"
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 46
+
+
  2130      676E6564 
  2130      20696E74 
  2130      00
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 46
-
-
  2131              	.LASF44:
  2132 025c 6163637A 		.ascii	"accz\000"
  2132      00
@@ -2755,12 +2758,12 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2158 02d9 63686172 		.ascii	"char\000"
  2158      00
  2159              	.LASF34:
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 47
+
+
  2160 02de 4F757458 		.ascii	"OutXfloat\000"
  2160      666C6F61 
  2160      7400
-ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 47
-
-
  2161              	.LASF51:
  2162 02e8 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
  2162      50657269 
@@ -2815,5 +2818,8 @@ ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccY6FNLv.s 			page 1
  2185              	.LASF35:
  2186 0381 4F757459 		.ascii	"OutYfloat\000"
  2186      666C6F61 
+ARM GAS  C:\Users\Mattia40\AppData\Local\Temp\ccBW5mND.s 			page 48
+
+
  2186      7400
  2187              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

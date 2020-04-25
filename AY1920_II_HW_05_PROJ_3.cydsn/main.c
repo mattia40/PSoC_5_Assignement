@@ -20,7 +20,6 @@
 #include "I2C_Interface.h"
 #include "project.h"
 #include "stdio.h"
-#include "math.h"
 #include "Defines.h"
 
 
@@ -112,6 +111,10 @@ int main(void)
     
     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1)//LP a 0
     {
+        /**
+        *   \brief Hex value to set the frequency of the accelerator in high resolution mode (the high-resolution mode 
+        *   is set by leaving low the bit Lpen in the CTRL_REG1 and high the bit HR in the CTRL_REG4)
+        */
         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1;
     
         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
@@ -168,7 +171,7 @@ int main(void)
     }
     
     
-    ctrl_reg4 = LIS3DH_CTRL_REG4_BDU_ACTIVE; // must be changed to the appropriate value, bit HR 0
+    ctrl_reg4 = LIS3DH_CTRL_REG4_BDU_ACTIVE; 
     
     error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
                                          LIS3DH_CTRL_REG4,
@@ -198,7 +201,7 @@ int main(void)
     float32 OutYfloat;//used to save data of y acceleration with decimals
     float32 OutZfloat;//used to save data of z acceleration with decimals
     uint8_t header = 0xA0;//header for UART comunication
-    uint8_t footer = 0xC0;//header for UART comunication 
+    uint8_t footer = 0xC0;//tail for UART comunication 
     uint8_t XYZData[6];//Array used to read data
     uint8_t register_count=5;//it is 5--> we need to read six value, from *(data) to  *(data+5)
     uint8_t OutArrayFloat[14];//array to be sent through UART
@@ -229,6 +232,7 @@ int main(void)
            
             if(error == NO_ERROR)
             {
+                //x direction
 
                 OutX = (int16)((XYZData[0] | (XYZData[1]<<8)))>>4;//merge data into a single int16 variable
                 
@@ -236,20 +240,15 @@ int main(void)
                 
                 OutXfloat=(OutXfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
                 
-                //OutXfloat=roundf(OutXfloat*1000);if you want to send only three decimals
-                
-                
-                
+                //y direction                
                 
                 OutY = (int16)((XYZData[2] | (XYZData[3]<<8)))>>4;//merge data into a single int16 variable
                 
                 OutYfloat=(float32)OutY;//cast float
                 
                 OutYfloat=(OutYfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
-                 
-                //OutYfloat=roundf(OutYfloat*1000);if you want to send only three decimals
                 
-                
+                //z direction
                 
                 OutZ = (int16)((XYZData[4] | (XYZData[5]<<8)))>>4;//merge data into a single int16 variable
                 
@@ -257,17 +256,17 @@ int main(void)
        
                 OutZfloat=(OutZfloat*CONSTANT_G)/DATA_RANGE;//conversion in m/s^2
                 
-                //OutZfloat=roundf(OutZfloat*1000); if you want to send only three decimals
                 
                 /* 
                 *   We could multiply the float by 1000 or more to save at least 3 decimals and then cast in an int:
-                *   then we can take advantage of the scale in the variable settings of the bridge control panel
-                *   IN THIS WAY (below) WE ARE ABLE TO SEND FLOAT VALUES TO BRIDGE CONTROL PANEL WITHOUT USING THE SCALE
-                *   VARIABLE IN THE VARIABLE SETTINGS
+                *   then we can take advantage of the scale in the variable settings of the bridge control panel to see
+                *   decimals
+                *   BUT I CHOOSE A DIFFERENT WAY-->WITH THE FOLLOWING CODE,WE ARE ABLE TO SEND FLOAT VALUES TO THE
+                *   BRIDGE CONTROL PANEL DIRECTLY WITHOUT USING THE SCALE IN THE VARIABLE SETTINGS
                 */
-                *(float*)(accx)=OutXfloat;//save the float into the uint8_t through the pointer
-                *(float*)(accy)=OutYfloat;//save the float into the uint8_t through the pointer
-                *(float*)(accz)=OutZfloat;//save the float into the uint8_t through the pointer
+                *(float*)(accx)=OutXfloat;//save the float into the uint8_t through the pointer: take the memory occupied by accx and read that out as a floating point number
+                *(float*)(accy)=OutYfloat;//save the float into the uint8_t through the pointer: take the memory occupied by accy and read that out as a floating point number
+                *(float*)(accz)=OutZfloat;//save the float into the uint8_t through the pointer: take the memory occupied by accz and read that out as a floating point number
                 
 
                 OutArrayFloat[1] = accx[0]  ;//copy of the LSB of the acc in the x direction into the position 1 of the array

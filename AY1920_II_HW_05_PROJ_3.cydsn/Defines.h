@@ -44,12 +44,6 @@
     */
     #define LIS3DH_NORMAL_MODE_CTRL_REG1 0x57
 
-    /**
-    *   \brief  Address of the Temperature Sensor Configuration register
-    */
-    #define LIS3DH_TEMP_CFG_REG 0x1F
-
-    #define LIS3DH_TEMP_CFG_REG_ACTIVE 0xC0
 
     /**
     *   \brief Address of the Control register 4
@@ -58,15 +52,6 @@
     //the HR bit is high for the high resolution mode, and also the FS0 must be high for a FSR of +-4
     #define LIS3DH_CTRL_REG4_BDU_ACTIVE 0x98 
 
-    /**
-    *   \brief Address of the ADC output LSB register
-    */
-    #define LIS3DH_OUT_ADC_3L 0x0C
-
-    /**
-    *   \brief Address of the ADC output MSB register
-    */
-    #define LIS3DH_OUT_ADC_3H 0x0D
 
     /**
     *   \brief Address of the accelerometer registers

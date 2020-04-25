@@ -44,12 +44,6 @@
 */
 #define LIS3DH_NORMAL_MODE_CTRL_REG1 0x57
 
-/**
-*   \brief  Address of the Temperature Sensor Configuration register
-*/
-#define LIS3DH_TEMP_CFG_REG 0x1F
-
-#define LIS3DH_TEMP_CFG_REG_ACTIVE 0xC0
 
 /**
 *   \brief Address of the Control register 4
@@ -58,15 +52,6 @@
 
 #define LIS3DH_CTRL_REG4_BDU_ACTIVE 0x80
 
-/**
-*   \brief Address of the ADC output LSB register
-*/
-#define LIS3DH_OUT_ADC_3L 0x0C
-
-/**
-*   \brief Address of the ADC output MSB register
-*/
-#define LIS3DH_OUT_ADC_3H 0x0D
 
 /**
 *   \brief Address of the accelerometer registers
@@ -81,7 +66,7 @@
 /*
 *   \brief Conversion digit-->mg
 */
-#define CONVERSION_CONSTANT_mg 4
+#define CONVERSION_CONSTANT_mg 1000/256
     
     
 #endif

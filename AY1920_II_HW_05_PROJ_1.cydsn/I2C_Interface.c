@@ -91,7 +91,7 @@
                 {
                     // Read data with acknowledgement
                     /*
-                    *   it is lower then register_count because when you reach i=register count, you have to 
+                    *   it is lower than register_count because when you reach i=register count, you have to 
                     *   exit from the for loop and send a NAK
                     */
                     for(i=0;i<register_count;i++)
