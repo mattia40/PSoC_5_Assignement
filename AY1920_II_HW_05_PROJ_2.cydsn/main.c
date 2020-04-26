@@ -231,9 +231,9 @@ int main(void)
                 OutZ = (int16)((XYZData[4] | (XYZData[5]<<8)))>>6;//merge data into a single int16 variable
                 
                 //From the Datasheet we can read that in the normal mode we have a correspondece of 4 mg/digit
-                OutX=OutX*CONVERSION_CONSTANT_mg;//Conversion into mg
-                OutY=OutY*CONVERSION_CONSTANT_mg;//Conversion into mg
-                OutZ=OutZ*CONVERSION_CONSTANT_mg;//Conversion into mg
+                OutX=(OutX*CONVERSION_CONSTANT_mg)/DATA_RANGE;//Conversion into mg
+                OutY=(OutY*CONVERSION_CONSTANT_mg)/DATA_RANGE;//Conversion into mg
+                OutZ=(OutZ*CONVERSION_CONSTANT_mg)/DATA_RANGE;//Conversion into mg
                
                 OutArray[1] = (uint8_t)(OutX & 0xFF);//copy of the LSB of x into the position 1 of the array
                 OutArray[2] = (uint8_t)(OutX >> 8);//copy of the MSB of x into the position 2 of the array
